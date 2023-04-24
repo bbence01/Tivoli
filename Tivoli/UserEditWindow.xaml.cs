@@ -51,13 +51,14 @@ namespace Tivoli
             {
                 // Create a new user object and populate it with data from the input fields
                 _user = new User
-                {
-                    username = UsernameTextBox.Text,
-                    fullName = FullNameTextBox.Text,
-                    email = EmailTextBox.Text,
-                    passwordHash = HashPassword(PasswordBox.Password), // Hash the password before storing
-                    role = RoleComboBox.SelectedIndex == 1 ? "Admin" : "User"
-                };
+                (
+                     UsernameTextBox.Text,
+                     FullNameTextBox.Text,
+                     EmailTextBox.Text,
+                     User.HashPassword(PasswordBox.Password), // Hash the password before storing
+                     RoleComboBox.SelectedIndex == 1 ? "Admin" : "User",
+                     true
+                );
 
                 // Add the new user to
 
@@ -74,7 +75,7 @@ namespace Tivoli
                 // Only update the password if the user has entered a new one
                 if (!string.IsNullOrEmpty(PasswordBox.Password))
                 {
-                    _user.passwordHash = HashPassword(PasswordBox.Password);
+                    _user.passwordHash = User.HashPassword(PasswordBox.Password);
                 }
                 _user.role = RoleComboBox.SelectedIndex == 1 ? "Admin" : "User";
 
@@ -88,7 +89,15 @@ namespace Tivoli
             Close();
         }
 
+        private void UpdateUserInDatabase(User user)
+        {
+            throw new NotImplementedException();
+        }
 
+        private void AddUserToDatabase(User user)
+        {
+            throw new NotImplementedException();
+        }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {

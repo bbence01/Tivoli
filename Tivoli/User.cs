@@ -10,7 +10,7 @@ namespace Tivoli
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id", TypeName = "int")]
-        public string Id;
+        private int Id;
         private string Username;
         private string PasswordHash;
         private string Role;
@@ -18,8 +18,17 @@ namespace Tivoli
         private string Email;
         private bool isActive;
 
+        public User(string username, string passwordHash, string role, string fullName, string email, bool isActive)
+        {
+            Username = username;
+            PasswordHash = passwordHash;
+            Role = role;
+            FullName = fullName;
+            Email = email;
+            this.isActive = isActive;
+        }
 
-        public string id { get => Id;}
+        public int id { get =>Id; set => Id=value; }
         public string username { get => Username; set => Username = value; }
         public string passwordHash { get => PasswordHash; set => PasswordHash = value; }
         public string role { get => Role; set => Role = value; }
@@ -28,7 +37,7 @@ namespace Tivoli
         public bool IsActive { get => isActive; set => isActive = value; }
 
 
-
+        public User() { }   
 
 
         /*
@@ -41,24 +50,13 @@ namespace Tivoli
         // public List<User> Users { get => users; set => users = value; }
 
 
-        public User(string username, string passwordHash, string role, string fullName, string email, bool isActive)
+       
+
+        public static User Authenticate(string username, string password , MyDatabaseContext context)
         {
-
-            this.username = username;
-            this.passwordHash = passwordHash;
-            this.role = role;
-            this.fullname = fullName;
-            this.email = email;
-            this.isActive = isActive;
-        }
-
-        public  User() { }
-
-        public  User Authenticate(string username, string password)
-        {
-            using (var dbContext = new MyDatabaseContext())
+            using (context)
             {
-                User user = dbContext.Users.FirstOrDefault(u => u.username == username);
+                User user = context.Users.FirstOrDefault(u => u.username == username);
                 if (user != null && VerifyPassword(password, user.PasswordHash))
                 {
                     return user;
@@ -70,13 +68,13 @@ namespace Tivoli
 
 
 
-        public string HashPassword(string password)
+        public static string HashPassword(string password)
         {
             return BCrypt.Net.BCrypt.HashPassword(password);
         }
 
 
-        private bool VerifyPassword(string password, string passwordHash)
+        private static bool VerifyPassword(string password, string passwordHash)
         {
             return BCrypt.Net.BCrypt.Verify(password, passwordHash);
         }

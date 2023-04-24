@@ -19,16 +19,16 @@ namespace Tivoli
     /// </summary>
     public partial class MainMenuWindow : Window
     {
-       
 
-         
+
+        DatabaseHelper dbhelper; 
         private User _currentUser;
 
-        public MainMenuWindow(User user)
+        public MainMenuWindow(User user, DatabaseHelper dbhelper)
         {
             InitializeComponent();
             _currentUser = user;
-
+            this.dbhelper = dbhelper;
             if (_currentUser.role == "Admin")
             {
                 // Show admin buttons
@@ -55,7 +55,7 @@ namespace Tivoli
 
         private void ManageUsersButton_Click(object sender, RoutedEventArgs e)
         {
-            UserManagementWindow userManagementWindow = new UserManagementWindow();
+            UserManagementWindow userManagementWindow = new UserManagementWindow(dbhelper);
             userManagementWindow.ShowDialog(); // Use ShowDialog() to open the window as a modal dialog
         }
 

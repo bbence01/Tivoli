@@ -28,7 +28,7 @@ namespace Tivoli
 
 
 
-        public User RegisterUser(UserRegistration registration)
+        public static User RegisterUser(UserRegistration registration)
         {
             using (var dbContext = new MyDatabaseContext())
             {
@@ -39,18 +39,18 @@ namespace Tivoli
                 }
 
                 // Hash the password
-                string passwordHash = HashPassword(registration.Password);
+                string passwordHash = User.HashPassword(registration.Password);
 
                 // Create a new user with the hashed password
                 User newUser = new User
-                {
-                    username = registration.Username,
-                    passwordHash = passwordHash,
-                    role = registration.Role,
-                    fullname = registration.Email,
-                    email = registration.Email,                    
-                    IsActive = true
-                };
+                (
+                     registration.Username,
+                     passwordHash,
+                     registration.Role,
+                     registration.Email,
+                     registration.Email,                    
+                     true
+                );
 
                 // Add the new user to the database
                 dbContext.Users.Add(newUser);
@@ -60,7 +60,7 @@ namespace Tivoli
             }
         }
 
-        private ICollection<ValidationResult> ValidateUserRegistration(UserRegistration registration)
+        public static ICollection<ValidationResult> ValidateUserRegistration(UserRegistration registration)
         {
             var validationResults = new List<ValidationResult>();
             var validationContext = new ValidationContext(registration, null, null);

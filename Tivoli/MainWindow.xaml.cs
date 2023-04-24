@@ -24,14 +24,22 @@ namespace Tivoli
     {
 
         private DatabaseHelper _databaseHelper;
-
+        private string YourConnectionString;
+        private MyDatabaseContext _databaseContext;
+        private MyDatabaseInitializer myDatabaseInitializer;
 
         public MainWindow()
         {
-            InitializeComponent();
-            // _databaseHelper = new DatabaseHelper(YourConnectionString);
+            _databaseContext = new MyDatabaseContext();
+            myDatabaseInitializer = new MyDatabaseInitializer(_databaseContext);
 
-            Database.SetInitializer(new MyDatabaseInitializer());
+            YourConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Egyetem\4.felev\INFOBiz\feleves\Tivoli\Tivoli\MyDatabase.mdf;Integrated Security=True;Connect Timeout=30";
+            _databaseHelper = new DatabaseHelper(YourConnectionString);
+           
+            Database.SetInitializer(myDatabaseInitializer);
+
+           
+            InitializeComponent();
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
@@ -39,11 +47,13 @@ namespace Tivoli
             string username = UsernameTextBox.Text;
             string password = PasswordBox.Password;
 
-            User authenticatedUser = Authenticate(username, password);
+            User authenticatedUser = User.Authenticate(username, password,_databaseContext);
+
+
 
             if (authenticatedUser != null)
             {
-                MainMenuWindow mainMenuWindow = new MainMenuWindow(authenticatedUser);
+                MainMenuWindow mainMenuWindow = new MainMenuWindow(authenticatedUser, _databaseHelper);
                 mainMenuWindow.Show();
                 this.Close();
             }
@@ -63,7 +73,7 @@ namespace Tivoli
                Role = "User"
             };
 
-            var validationResults = ValidateUserRegistration(registration);
+            var validationResults = UserRegistration.ValidateUserRegistration(registration);
 
             if (validationResults.Count > 0)
             {
@@ -72,7 +82,7 @@ namespace Tivoli
             }
             else
             {
-                User registeredUser = RegisterUser(registration);
+                User registeredUser = UserRegistration.RegisterUser(registration);
 
                 if (registeredUser != null)
                 {

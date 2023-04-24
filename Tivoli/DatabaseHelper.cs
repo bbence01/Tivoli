@@ -10,7 +10,7 @@ namespace Tivoli
 {
     public class DatabaseHelper
     {
-        private readonly string _connectionString;
+        private string _connectionString;
 
         public DatabaseHelper(string connectionString)
         {
@@ -55,7 +55,7 @@ namespace Tivoli
                     "UPDATE Users SET Username = @Username, FullName = @FullName, Email = @Email, Password = @Password, Role = @Role WHERE Id = @Id",
                     connection))
                 {
-                   // command.Parameters.AddWithValue("@Id", user.id);
+                    // command.Parameters.AddWithValue("@Id", user.id);
                     command.Parameters.AddWithValue("@Username", user.username);
                     command.Parameters.AddWithValue("@FullName", user.fullname);
                     command.Parameters.AddWithValue("@Email", user.email);
@@ -95,14 +95,15 @@ namespace Tivoli
                         while (reader.Read())
                         {
                             User user = new User
-                            {
-                                //id = (int)reader["Id"],
-                                username = (string)reader["Username"],
-                                fullname = (string)reader["FullName"],
-                                email = (string)reader["Email"],
-                                passwordHash = (string)reader["Password"],
-                                role = (string)reader["Role"]
-                            };
+                            (
+                                 //id = (int)reader["Id"],
+                                 (string)reader["Username"],
+                                 (string)reader["FullName"],
+                                 (string)reader["Email"],
+                                 (string)reader["Password"],
+                                 (string)reader["Role"],
+                                 true
+                            );
                             users.Add(user);
                         }
                     }
@@ -112,6 +113,11 @@ namespace Tivoli
             return users;
         }
 
+
+        public  void ArchiveUserInDatabase(User user)
+        {
+            user.IsActive = false;
+        }
 
 
     }

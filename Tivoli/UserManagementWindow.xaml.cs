@@ -24,7 +24,7 @@ namespace Tivoli
         private void LoadUsers()
         {
             // Replace this with your actual method of retrieving users from the database
-            List<User> users = GetUsersFromDatabase();
+            List<User> users = dbhelper.GetAllUsers();
 
             UsersDataGrid.ItemsSource = users;
         }
@@ -60,7 +60,7 @@ namespace Tivoli
             if (selectedUser != null)
             {
                 // Replace this with your actual method of deleting users from the database
-                DeleteUserFromDatabase(selectedUser);
+                dbhelper.DeleteUser(selectedUser);
                 LoadUsers(); // Refresh the user list after deleting a user
             }
         }
@@ -72,16 +72,17 @@ namespace Tivoli
             if (selectedUser != null)
             {
                 // Replace this with your actual method of archiving users in the database
-                ArchiveUserInDatabase(selectedUser);
+                dbhelper.ArchiveUserInDatabase(selectedUser);
                 LoadUsers(); // Refresh the user list after archiving a user
             }
         }
 
-
-        public UserManagementWindow()
+        DatabaseHelper dbhelper;
+        public UserManagementWindow(DatabaseHelper dbhelper )
         {
             InitializeComponent();
             LoadUsers();
+            this.dbhelper = dbhelper;
         }
 
     }

@@ -12,8 +12,9 @@ namespace Tivoli
 
     public class MyDatabaseInitializer : CreateDatabaseIfNotExists<MyDatabaseContext>
     {
-        public MyDatabaseInitializer()
+        public MyDatabaseInitializer(MyDatabaseContext context)
         {
+            Seed(context);
         }
 
 
@@ -31,17 +32,30 @@ namespace Tivoli
             
             // Create an admin user
             User adminUser = new User
-            {
-                username = "admin",
-                passwordHash = hashedPassword,              
-                role = "Admin",
-                fullname= "admin",
-                email = "admin@example.com",
-                IsActive = true
-            };
+            (
+                
+                "admin",
+                 hashedPassword,              
+                "Admin",
+                 "admin",
+                 "admin@example.com",
+                 true
+            );
+
+            User basicuser = new User
+          (
+
+              "user",
+               "user",
+              "Admin",
+               "admin",
+               "admin@example.com",
+               true
+          );
 
             // Add the admin user to the Users DbSet
             context.Users.Add(adminUser);
+            context.Users.Add (basicuser);
 
             // Save the changes to the database
             context.SaveChanges();
