@@ -53,7 +53,7 @@ namespace Tivoli
 
             if (authenticatedUser != null)
             {
-                MainMenuWindow mainMenuWindow = new MainMenuWindow(authenticatedUser, _databaseHelper);
+                MainMenuWindow mainMenuWindow = new MainMenuWindow(authenticatedUser, _databaseHelper, _databaseContext);
                 mainMenuWindow.Show();
                 this.Close();
             }

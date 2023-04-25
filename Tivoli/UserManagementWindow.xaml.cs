@@ -78,11 +78,14 @@ namespace Tivoli
         }
 
         DatabaseHelper dbhelper;
-        public UserManagementWindow(DatabaseHelper dbhelper )
+        public UserManagementWindow(DatabaseHelper dbhelper)
         {
+
+            this.dbhelper = dbhelper;
             InitializeComponent();
             LoadUsers();
-            this.dbhelper = dbhelper;
+            
+
         }
 
     }

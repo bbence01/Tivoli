@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Tivoli
 {
@@ -18,10 +19,11 @@ namespace Tivoli
         }
 
 
-       private string hashedPassword;
+        private string hashedPassword;
+        private string password ;
 
         protected override void Seed(MyDatabaseContext context)
-        {
+        {/*
             // Hash the password (for simplicity, we are using SHA256, but you should use a more secure method)
             using (var sha256 = new System.Security.Cryptography.SHA256Managed())
             {
@@ -29,33 +31,54 @@ namespace Tivoli
                 var hashedPasswordBytes = sha256.ComputeHash(passwordBytes);
                 this.hashedPassword = BitConverter.ToString(hashedPasswordBytes).Replace("-", "").ToLower();
             }
-            
+            */
+
+
+             password = "admin";
+             hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
+           
+
             // Create an admin user
             User adminUser = new User
             (
-                
+
                 "admin",
-                 hashedPassword,              
+                 hashedPassword,
                 "Admin",
-                 "admin",
+                 "Admin Man",
                  "admin@example.com",
                  true
             );
+
+            password = "user";
+            hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
 
             User basicuser = new User
           (
 
               "user",
-               "user",
-              "Admin",
-               "admin",
-               "admin@example.com",
+               hashedPassword,
+              "User",
+               "User Man",
+               "user@example.com",
                true
           );
 
+
+
+            if (context.Users.FirstOrDefault(u => u.username == adminUser.username)==null)
+            {
+                context.Users.Add(adminUser);
+            }
             // Add the admin user to the Users DbSet
-            context.Users.Add(adminUser);
-            context.Users.Add (basicuser);
+
+
+
+
+            if (context.Users.FirstOrDefault(u => u.username == basicuser.username) == null)
+            {
+                context.Users.Add(basicuser);
+            }
 
             // Save the changes to the database
             context.SaveChanges();

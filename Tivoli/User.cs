@@ -37,7 +37,23 @@ namespace Tivoli
         public bool IsActive { get => isActive; set => isActive = value; }
 
 
-        public User() { }   
+        public User() { }
+
+        public User(int id, string username, string passwordHash, string role, string fullName, string email, bool isActive)
+        {
+            Id = id;
+            Username = username;
+            PasswordHash = passwordHash;
+            Role = role;
+            FullName = fullName;
+            Email = email;
+            this.isActive = isActive;
+        }
+
+        public User(int id)
+        {
+            Id = id;
+        }
 
 
         /*
@@ -50,7 +66,7 @@ namespace Tivoli
         // public List<User> Users { get => users; set => users = value; }
 
 
-       
+
 
         public static User Authenticate(string username, string password , MyDatabaseContext context)
         {

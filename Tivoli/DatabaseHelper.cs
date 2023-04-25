@@ -96,13 +96,13 @@ namespace Tivoli
                         {
                             User user = new User
                             (
-                                 //id = (int)reader["Id"],
+                                 (int)reader["Id"],
                                  (string)reader["Username"],
-                                 (string)reader["FullName"],
-                                 (string)reader["Email"],
-                                 (string)reader["Password"],
+                                 (string)reader["PasswordHash"],
                                  (string)reader["Role"],
-                                 true
+                                 (string)reader["FullName"],
+                                 (string)reader["Email"],   
+                                 (bool)reader["isActive"]
                             );
                             users.Add(user);
                         }

@@ -16,6 +16,8 @@
             <Button x:Name="CreateWorkgroupButton" Content="Create Workgroup" Width="200" Visibility="Collapsed" Click="CreateWorkgroupButton_Click"/>
             <Button x:Name="AssignResponsibilitiesButton" Content="Assign Responsibilities" Width="200" Visibility="Collapsed" Click="AssignResponsibilitiesButton_Click"/>
             <Button x:Name="ViewLogsButton" Content="View Logs" Width="200" Visibility="Collapsed" Click="ViewLogsButton_Click"/>
+           
+
         </StackPanel>
     </Grid>
 </Window>

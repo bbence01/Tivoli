@@ -23,12 +23,14 @@ namespace Tivoli
 
         DatabaseHelper dbhelper; 
         private User _currentUser;
+        MyDatabaseContext context;
 
-        public MainMenuWindow(User user, DatabaseHelper dbhelper)
+        public MainMenuWindow(User user, DatabaseHelper dbhelper , MyDatabaseContext context)
         {
-            InitializeComponent();
+            this.context = context;
             _currentUser = user;
             this.dbhelper = dbhelper;
+            InitializeComponent();
             if (_currentUser.role == "Admin")
             {
                 // Show admin buttons
@@ -38,6 +40,7 @@ namespace Tivoli
                 AssignResponsibilitiesButton.Visibility = Visibility.Visible;
                 ViewLogsButton.Visibility = Visibility.Visible;
             }
+            
         }
 
         private void ViewProfileButton_Click(object sender, RoutedEventArgs e)
@@ -59,11 +62,7 @@ namespace Tivoli
             userManagementWindow.ShowDialog(); // Use ShowDialog() to open the window as a modal dialog
         }
 
-
-        private void CreateWorkgroupButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Implement create workgroup functionality
-        }
+      
 
         private void AssignResponsibilitiesButton_Click(object sender, RoutedEventArgs e)
         {
@@ -75,6 +74,20 @@ namespace Tivoli
             // Implement view logs functionality
 
         }
+
+
+        private void CreateWorkgroupButton_Click(object sender, RoutedEventArgs e)
+        {
+            CreateWorkgroupWindow createWorkgroupWindow = new CreateWorkgroupWindow(context);
+            bool? result = createWorkgroupWindow.ShowDialog();
+
+            if (result.HasValue && result.Value)
+            {
+                MessageBox.Show("Workgroup created successfully.");
+                // Refresh the list of workgroups if necessary
+            }
+        }
+
 
 
     }
