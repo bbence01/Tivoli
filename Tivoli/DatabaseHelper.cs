@@ -83,6 +83,7 @@ namespace Tivoli
         // Get all users from the database
         public List<User> GetAllUsers()
         {
+            int type = 5;
             List<User> users = new List<User>();
 
             using (SqlConnection connection = GetConnection())
@@ -94,17 +95,39 @@ namespace Tivoli
                     {
                         while (reader.Read())
                         {
-                            User user = new User
+
+                            if (reader["WorkgroupId"] is System.DBNull)
+                            {
+                                User user = new User
                             (
                                  (int)reader["Id"],
                                  (string)reader["Username"],
                                  (string)reader["PasswordHash"],
                                  (string)reader["Role"],
                                  (string)reader["FullName"],
-                                 (string)reader["Email"],   
+                                 (string)reader["Email"],
                                  (bool)reader["isActive"]
                             );
-                            users.Add(user);
+                                users.Add(user);
+                            }
+                            else
+                            {
+                                User user = new User
+                            (
+                                 (int)reader["Id"],
+                                 (string)reader["Username"],
+                                 (string)reader["PasswordHash"],
+                                 (string)reader["Role"],
+                                 (string)reader["FullName"],
+                                 (string)reader["Email"],
+                                 (bool)reader["isActive"],
+                                 (int)reader["WorkgroupId"]
+                            );
+                                users.Add(user);
+                            }
+
+                           
+                           
                         }
                     }
                 }
@@ -114,10 +137,77 @@ namespace Tivoli
         }
 
 
-        public  void ArchiveUserInDatabase(User user)
+        public void ArchiveUserInDatabase(User user)
         {
             user.IsActive = false;
         }
+
+
+        public void AddWorkgroup(Workgroup workgroup)
+        {
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(
+                    "INSERT INTO Workgroups (Name, Description) VALUES (@Name, @Description)",
+                    connection))
+                {
+                    command.Parameters.AddWithValue("@Name", workgroup.Name);
+                    command.Parameters.AddWithValue("@Description", workgroup.Description);
+               
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+
+        public List<Workgroup> GetAllWorkgroups()
+        {
+            // Retrieve workgroups from the database.
+            List<Workgroup> workergroups = new List<Workgroup>();
+
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand("SELECT * FROM Workgroups", connection))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Workgroup wg = new Workgroup
+                            (
+                                 (int)reader["Id"],
+                                 (string)reader["Name"],
+                                 (string)reader["Description"]
+                                
+                            );
+                            workergroups.Add(wg);
+                        }
+                    }
+                }
+            }
+
+            return workergroups;
+        }
+
+        public void AssignResponsibility(int userId, int workgroupId)
+        {
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand("UPDATE Users SET WorkgroupId = @WorkgroupId WHERE Id = @UserId", connection))
+                {
+                    command.Parameters.AddWithValue("@UserId", userId);
+                    command.Parameters.AddWithValue("@WorkgroupId", workgroupId);
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
 
 
     }

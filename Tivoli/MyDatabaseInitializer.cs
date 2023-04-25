@@ -65,6 +65,16 @@ namespace Tivoli
           );
 
 
+            Workgroup Worker = new Workgroup
+                (
+
+                "Basic Workers",
+                "Basic Worker"
+
+                );
+    
+
+            
 
             if (context.Users.FirstOrDefault(u => u.username == adminUser.username)==null)
             {
@@ -79,6 +89,13 @@ namespace Tivoli
             {
                 context.Users.Add(basicuser);
             }
+
+
+            if (context.Workgroups.FirstOrDefault(w => w.Name == Worker.Name) == null)
+            {
+                context.Workgroups.Add(Worker);
+            }
+            
 
             // Save the changes to the database
             context.SaveChanges();

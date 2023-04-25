@@ -16,9 +16,16 @@ namespace Tivoli
         private string Role;
         private string FullName;
         private string Email;
-        private bool isActive;
+        private bool isActive;        
+        private int? WorkgroupId;
 
-        public User(string username, string passwordHash, string role, string fullName, string email, bool isActive)
+
+       
+
+        // Navigation property to Workgroup
+        public virtual Workgroup Workgroup { get; set; }
+
+        public User(string username, string passwordHash, string role, string fullName, string email, bool isActive, int? workgroupId = null)
         {
             Username = username;
             PasswordHash = passwordHash;
@@ -26,6 +33,7 @@ namespace Tivoli
             FullName = fullName;
             Email = email;
             this.isActive = isActive;
+            WorkgroupId = workgroupId;
         }
 
         public int id { get =>Id; set => Id=value; }
@@ -35,7 +43,7 @@ namespace Tivoli
         public string fullname { get => FullName; set => FullName = value; }
         public string email { get => Email; set => Email = value; }       
         public bool IsActive { get => isActive; set => isActive = value; }
-
+        public int? workgroupId { get => WorkgroupId; set => WorkgroupId = value; }
 
         public User() { }
 
@@ -53,6 +61,18 @@ namespace Tivoli
         public User(int id)
         {
             Id = id;
+        }
+
+        public User(int id, string username, string passwordHash, string role, string fullName, string email, bool isActive, int? workgroupId)
+        {
+            Id = id;
+            Username = username;
+            PasswordHash = passwordHash;
+            Role = role;
+            FullName = fullName;
+            Email = email;
+            this.isActive = isActive;
+            WorkgroupId = workgroupId;
         }
 
 

@@ -35,11 +35,21 @@ namespace Tivoli
 
             YourConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Egyetem\4.felev\INFOBiz\feleves\Tivoli\Tivoli\MyDatabase.mdf;Integrated Security=True;Connect Timeout=30";
             _databaseHelper = new DatabaseHelper(YourConnectionString);
-           
-            Database.SetInitializer(myDatabaseInitializer);
 
-           
-            InitializeComponent();
+
+            try
+            {
+                // Your database initialization code here
+                Database.SetInitializer(myDatabaseInitializer);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception and display a message to the user
+                Console.WriteLine(ex.ToString());
+                MessageBox.Show("An error occurred while initializing the database. See the application logs for more details.");
+            }
+
+                InitializeComponent();
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)

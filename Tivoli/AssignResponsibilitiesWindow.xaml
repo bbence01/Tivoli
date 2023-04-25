@@ -1,0 +1,28 @@
+﻿<Window x:Class="Tivoli.AssignResponsibilitiesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Tivoli"
+        mc:Ignorable="d"
+        Title="AssignResponsibilitiesWindow" Height="450" Width="800">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,10">
+            <TextBlock Text="User:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+            <ComboBox x:Name="UserComboBox" Width="200"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,10">
+            <TextBlock Text="Workgroup:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+            <ComboBox x:Name="WorkgroupComboBox" Width="200"/>
+        </StackPanel>
+
+        <Button x:Name="AssignResponsibilityButton" Grid.Row="2" Content="Assign Responsibility" Click="AssignResponsibilityButton_Click"/>
+    </Grid>
+</Window>

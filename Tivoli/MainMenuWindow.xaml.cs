@@ -67,6 +67,8 @@ namespace Tivoli
         private void AssignResponsibilitiesButton_Click(object sender, RoutedEventArgs e)
         {
             // Implement assign responsibilities functionality
+            AssignResponsibilitiesWindow assignResponsibilitiesWindow = new AssignResponsibilitiesWindow(dbhelper);
+            assignResponsibilitiesWindow.ShowDialog();
         }
 
         private void ViewLogsButton_Click(object sender, RoutedEventArgs e)
@@ -78,7 +80,7 @@ namespace Tivoli
 
         private void CreateWorkgroupButton_Click(object sender, RoutedEventArgs e)
         {
-            CreateWorkgroupWindow createWorkgroupWindow = new CreateWorkgroupWindow(context);
+            CreateWorkgroupWindow createWorkgroupWindow = new CreateWorkgroupWindow(context,dbhelper);
             bool? result = createWorkgroupWindow.ShowDialog();
 
             if (result.HasValue && result.Value)

@@ -20,10 +20,12 @@ namespace Tivoli
     public partial class CreateWorkgroupWindow : Window
     {
         MyDatabaseContext context;
-        public CreateWorkgroupWindow(MyDatabaseContext context)
+        DatabaseHelper dbhelper;
+        public CreateWorkgroupWindow(MyDatabaseContext context, DatabaseHelper dbhelper)
         {
             this.context = context;
             InitializeComponent();
+            this.dbhelper = dbhelper;
         }
 
         private void CreateButton_Click(object sender, RoutedEventArgs e)
@@ -45,11 +47,13 @@ namespace Tivoli
             };
 
             // Save the new workgroup to the database
-            using (context )
-            {
-                context.Workgroups.Add(newWorkgroup);
-                context.SaveChanges();
-            }
+            /* using (context )
+             {
+                 context.Workgroups.Add(newWorkgroup);
+                 context.SaveChanges();
+             }*/
+
+            dbhelper.AddWorkgroup(newWorkgroup);
 
             // Close the window
             this.DialogResult = true;
