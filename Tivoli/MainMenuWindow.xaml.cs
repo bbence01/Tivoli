@@ -11,6 +11,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Tivoli.Models;
+using Tivoli.Data;
+using Tivoli.Logic;
 
 namespace Tivoli
 {
@@ -88,6 +91,21 @@ namespace Tivoli
                 MessageBox.Show("Workgroup created successfully.");
                 // Refresh the list of workgroups if necessary
             }
+        }
+
+        private void AssignUsersToWorkgroupsButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Open the UserWorkgroupAssignmentWindow
+        }
+
+        private void ApproveUserRequestsButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Open the ApproveUserRequestsWindow
+        }
+
+        private void RejectUserRequestsButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Open the RejectUserRequestsWindow
         }
 
 

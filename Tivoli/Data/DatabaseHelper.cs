@@ -5,8 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Data;
+using System.Windows;
+using System.Data.Entity;
+using Tivoli.Models;
+using Tivoli.Data;
+using Tivoli.Logic;
 
-namespace Tivoli
+namespace Tivoli.Data
 {
     public class DatabaseHelper
     {
@@ -96,7 +101,7 @@ namespace Tivoli
                         while (reader.Read())
                         {
 
-                            if (reader["WorkgroupId"] is System.DBNull)
+                            if (reader["WorkgroupId"] is DBNull)
                             {
                                 User user = new User
                             (
@@ -126,8 +131,8 @@ namespace Tivoli
                                 users.Add(user);
                             }
 
-                           
-                           
+
+
                         }
                     }
                 }
@@ -154,7 +159,7 @@ namespace Tivoli
                 {
                     command.Parameters.AddWithValue("@Name", workgroup.Name);
                     command.Parameters.AddWithValue("@Description", workgroup.Description);
-               
+
 
                     command.ExecuteNonQuery();
                 }
@@ -182,7 +187,7 @@ namespace Tivoli
                                  (int)reader["Id"],
                                  (string)reader["Name"],
                                  (string)reader["Description"]
-                                
+
                             );
                             workergroups.Add(wg);
                         }
@@ -205,6 +210,41 @@ namespace Tivoli
 
                     command.ExecuteNonQuery();
                 }
+            }
+        }
+
+        public void AddUserRequest(UserRequest userRequest)
+        {
+            using (MyDatabaseContext context = new MyDatabaseContext())
+            {
+                context.UserRequests.Add(userRequest);
+                context.SaveChanges();
+            }
+        }
+
+        public List<UserRequest> GetUserRequests()
+        {
+            using (MyDatabaseContext context = new MyDatabaseContext())
+            {
+                return context.UserRequests.Include(ur => ur.User).Include(ur => ur.Workgroup).ToList();
+            }
+        }
+
+        public void UpdateUserRequest(UserRequest userRequest)
+        {
+            using (MyDatabaseContext context = new MyDatabaseContext())
+            {
+                context.Entry(userRequest).State = EntityState.Modified;
+                context.SaveChanges();
+            }
+        }
+
+        public void DeleteUserRequest(UserRequest userRequest)
+        {
+            using (MyDatabaseContext context = new MyDatabaseContext())
+            {
+                context.Entry(userRequest).State = EntityState.Deleted;
+                context.SaveChanges();
             }
         }
 

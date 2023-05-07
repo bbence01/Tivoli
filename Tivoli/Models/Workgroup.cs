@@ -5,8 +5,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tivoli.Models;
+using Tivoli.Data;
+using Tivoli.Logic;
 
-namespace Tivoli
+namespace Tivoli.Models
 {
     public class Workgroup
     {
@@ -37,7 +40,8 @@ namespace Tivoli
         public string Name { get; set; }
         public string Description { get; set; }
 
-       
+        public virtual ICollection<UserRequest> UserRequests { get; set; }
+
     }
 
 }

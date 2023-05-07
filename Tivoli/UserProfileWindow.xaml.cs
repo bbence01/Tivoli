@@ -11,8 +11,12 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Tivoli.Models;
+using Tivoli.Data;
+using Tivoli.Logic;
 
 namespace Tivoli
+
 {
     /// <summary>
     /// Interaction logic for UserProfileWindow.xaml

@@ -21,6 +21,7 @@
         <Label Grid.Row="1" Grid.Column="0" Content="Password:" />
         <PasswordBox Grid.Row="1" Grid.Column="1" x:Name="PasswordBox" />
         <Button Grid.Row="2" Grid.Column="1" Content="Login" Click="LoginButton_Click" />
+        
 
     </Grid>
 </Window>

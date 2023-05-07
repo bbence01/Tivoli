@@ -13,7 +13,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
+using Tivoli.Data;
+using Tivoli.Logic;
+using Tivoli.Models;
 
 namespace Tivoli
 {
@@ -33,7 +35,7 @@ namespace Tivoli
             _databaseContext = new MyDatabaseContext();
             myDatabaseInitializer = new MyDatabaseInitializer(_databaseContext);
 
-            YourConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Egyetem\4.felev\INFOBiz\feleves\Tivoli\Tivoli\MyDatabase.mdf;Integrated Security=True;Connect Timeout=30";
+            YourConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Egyetem\4.felev\INFOBiz\feleves\Tivoli\Tivoli\Data\MyDatabase.mdf;Integrated Security=True;Connect Timeout=30";
             _databaseHelper = new DatabaseHelper(YourConnectionString);
 
 

@@ -6,10 +6,14 @@ using System.Threading.Tasks;
 using System.Data;
 using System.Data.Entity;
 using Microsoft.EntityFrameworkCore;
+using Tivoli.Models;
+using Tivoli.Models;
+using Tivoli.Data;
+using Tivoli.Logic;
 
-namespace Tivoli
+namespace Tivoli.Data
 {
-  
+
 
     public class MyDatabaseInitializer : CreateDatabaseIfNotExists<MyDatabaseContext>
     {
@@ -20,7 +24,7 @@ namespace Tivoli
 
 
         private string hashedPassword;
-        private string password ;
+        private string password;
 
         protected override void Seed(MyDatabaseContext context)
         {/*
@@ -34,9 +38,9 @@ namespace Tivoli
             */
 
 
-             password = "admin";
-             hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
-           
+            password = "admin";
+            hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
+
 
             // Create an admin user
             User adminUser = new User
@@ -72,11 +76,11 @@ namespace Tivoli
                 "Basic Worker"
 
                 );
-    
 
-            
 
-            if (context.Users.FirstOrDefault(u => u.username == adminUser.username)==null)
+
+
+            if (context.Users.FirstOrDefault(u => u.username == adminUser.username) == null)
             {
                 context.Users.Add(adminUser);
             }
@@ -95,7 +99,7 @@ namespace Tivoli
             {
                 context.Workgroups.Add(Worker);
             }
-            
+
 
             // Save the changes to the database
             context.SaveChanges();

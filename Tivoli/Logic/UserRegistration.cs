@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using Tivoli.Models;
+using Tivoli.Models;
+using Tivoli.Data;
+using Tivoli.Logic;
 
-
-namespace Tivoli
+namespace Tivoli.Logic
 {
     public class UserRegistration
     {
@@ -53,12 +56,12 @@ namespace Tivoli
                      passwordHash,
                      registration.Role,
                      registration.FullName,
-                     registration.Email,                    
+                     registration.Email,
                      true
                 );
 
                 // Add the new user to the database
-               
+
                 dbContext.Users.Add(newUser);
                 dbContext.SaveChanges();
 

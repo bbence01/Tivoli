@@ -2,8 +2,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using Tivoli.Data;
+using Tivoli.Models;
+using Tivoli.Data;
+using Tivoli.Logic;
 
-namespace Tivoli
+namespace Tivoli.Models
 {
     public class User
     {
@@ -16,14 +20,16 @@ namespace Tivoli
         private string Role;
         private string FullName;
         private string Email;
-        private bool isActive;        
+        private bool isActive;
         private int? WorkgroupId;
 
 
-       
+
 
         // Navigation property to Workgroup
         public virtual Workgroup Workgroup { get; set; }
+        public virtual ICollection<UserRequest> UserRequests { get; set; }
+
 
         public User(string username, string passwordHash, string role, string fullName, string email, bool isActive, int? workgroupId = null)
         {
@@ -36,12 +42,12 @@ namespace Tivoli
             WorkgroupId = workgroupId;
         }
 
-        public int id { get =>Id; set => Id=value; }
+        public int id { get => Id; set => Id = value; }
         public string username { get => Username; set => Username = value; }
         public string passwordHash { get => PasswordHash; set => PasswordHash = value; }
         public string role { get => Role; set => Role = value; }
         public string fullname { get => FullName; set => FullName = value; }
-        public string email { get => Email; set => Email = value; }       
+        public string email { get => Email; set => Email = value; }
         public bool IsActive { get => isActive; set => isActive = value; }
         public int? workgroupId { get => WorkgroupId; set => WorkgroupId = value; }
 
@@ -88,7 +94,7 @@ namespace Tivoli
 
 
 
-        public static User Authenticate(string username, string password , MyDatabaseContext context)
+        public static User Authenticate(string username, string password, MyDatabaseContext context)
         {
             using (context)
             {
