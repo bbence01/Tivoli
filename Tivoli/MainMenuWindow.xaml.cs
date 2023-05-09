@@ -96,18 +96,17 @@ namespace Tivoli
         private void AssignUsersToWorkgroupsButton_Click(object sender, RoutedEventArgs e)
         {
             // Open the UserWorkgroupAssignmentWindow
+            AssignResponsibilitiesWindow assignResponsibilitiesWindow = new AssignResponsibilitiesWindow(dbhelper);
+            assignResponsibilitiesWindow.ShowDialog();
         }
 
-        private void ApproveUserRequestsButton_Click(object sender, RoutedEventArgs e)
+  
+
+        private void ManageUserRequestsButton_Click(object sender, RoutedEventArgs e)
         {
-            // Open the ApproveUserRequestsWindow
+            ManageUserRequestsWindow manageUserRequestsWindow = new ManageUserRequestsWindow(context, dbhelper);
+            manageUserRequestsWindow.ShowDialog();
         }
-
-        private void RejectUserRequestsButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Open the RejectUserRequestsWindow
-        }
-
 
 
     }
