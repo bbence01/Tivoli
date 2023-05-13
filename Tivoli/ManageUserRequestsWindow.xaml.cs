@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using System.Windows;
 using Tivoli.Data;
 using Tivoli.Models;
+using Tivoli.Logic;
 
 namespace Tivoli
 {
@@ -27,11 +28,13 @@ namespace Tivoli
         MyDatabaseContext context;
         DatabaseHelper dbHelper;
         UserTivoli _currentUser;
+        EmailService emailService;
         public ManageUserRequestsWindow(UserTivoli user, MyDatabaseContext context, DatabaseHelper dbhelper)
         {
             this._currentUser = user;
             this.context = context;
             this.dbHelper = dbhelper;
+            this.emailService = new EmailService();
             InitializeComponent();
             
 
@@ -52,6 +55,12 @@ namespace Tivoli
             RequestTivoli selectedRequest = (RequestTivoli)UserRequestsDataGrid.SelectedItem;
             if (selectedRequest != null)
             {
+
+
+                
+
+               
+                dbHelper.SendEmailConfirmation(selectedRequest);
                 dbHelper.ApproveRequest(selectedRequest.Id, _currentUser.id);
 
 

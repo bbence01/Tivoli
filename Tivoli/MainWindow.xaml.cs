@@ -26,7 +26,7 @@ namespace Tivoli
     {
 
         private DatabaseHelper _databaseHelper;
-        private string YourConnectionString;
+        private string ConnectionString;
         private MyDatabaseContext _databaseContext;
         private MyDatabaseInitializer myDatabaseInitializer;
 
@@ -35,8 +35,8 @@ namespace Tivoli
             _databaseContext = new MyDatabaseContext();
             myDatabaseInitializer = new MyDatabaseInitializer(_databaseContext);
 
-            YourConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Egyetem\4.felev\INFOBiz\feleves\Tivoli\Tivoli\Data\MyDatabase.mdf;Integrated Security=True;Connect Timeout=30";
-            _databaseHelper = new DatabaseHelper(YourConnectionString);
+            ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Egyetem\4.felev\INFOBiz\feleves\Tivoli\Tivoli\Data\MyDatabase.mdf;Integrated Security=True;Connect Timeout=30";
+            _databaseHelper = new DatabaseHelper(ConnectionString);
 
 
             try

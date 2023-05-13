@@ -333,7 +333,7 @@ namespace Tivoli.Data
 
                     tvr = context.Requests.ToList();
 
-                    return tvr;
+                    return context.Requests.Include(r => r.User).ToList();
                 }
                 else  
                 {
@@ -628,6 +628,41 @@ namespace Tivoli.Data
                 Logger.Log($"Admin {currentuser.username} made {selectedUser.id},{selectedUser.username} leader of workgroup {workgroup.Id}, {workgroup.Name} ");
 
             }
+        }
+
+        internal void SendEmailConfirmation(RequestTivoli selectedRequest)
+        {
+            EmailService emailService = new EmailService();
+
+            using (var context = new MyDatabaseContext())
+            {
+                string confirmationLink = emailService.GenerateConfirmationLink(selectedRequest, "approve");
+                //  emailService.SendConfirmationEmail(selectedRequest.User.email, confirmationLink);
+                //  emailService.SendConfirmationEmail("tivoliteszt002@yahoo.com", confirmationLink);
+
+               
+                 emailService.SendEmailAsync(
+                    fromEmail: "tivoliteszt002@gmail.com",
+                    toEmail: "tivoliteszt002@yahoo.com",
+                    subject: "Hello",
+                    plainTextContent: "Hello, World!",
+                    htmlContent: "<strong>Hello, World!</strong>"
+                );
+
+                selectedRequest.Status = "In Progress";
+            }
+
+        }
+        
+
+        internal void UpdateRequestStatus(int requestId, string v)
+        {
+            using (var context = new MyDatabaseContext())
+            {
+                RequestTivoli request = context.Requests.First(u => u.Id == requestId);
+                request.Status = v;
+            }
+
         }
     }
 }
