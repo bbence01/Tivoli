@@ -23,8 +23,12 @@ namespace Tivoli
     public partial class AssignResponsibilitiesWindow : Window
     {
         DatabaseHelper databaseHelper;
-        public AssignResponsibilitiesWindow(DatabaseHelper databaseHelper)
+        UserTivoli _currentUser;
+
+        public AssignResponsibilitiesWindow(UserTivoli user, DatabaseHelper databaseHelper)
         {
+            this._currentUser = user;
+
             this.databaseHelper = databaseHelper;
             InitializeComponent();
 
@@ -63,9 +67,16 @@ namespace Tivoli
                 int workgroupId = int.Parse(WorkgroupComboBox.SelectedValue.ToString());
 
                 // Assign the responsibility in the database.
-                databaseHelper.AddUserToWorkgroup(userId, workgroupId);
+                if (databaseHelper.AddUserToWorkgroup(userId, workgroupId, _currentUser.id))
+                {
+                    MessageBox.Show("Responsibility assigned successfully.");
+                }  
+                else
+                {
+                    MessageBox.Show("User is already part of a group.");
 
-                MessageBox.Show("Responsibility assigned successfully.");
+                }
+
             }
             else
             {
@@ -81,7 +92,7 @@ namespace Tivoli
                 int workgroupId = int.Parse(WorkgroupComboBox.SelectedValue.ToString());
 
                 // Assign the responsibility in the database.
-                databaseHelper.removeUserFromWorkgroup(userId, workgroupId);
+                databaseHelper.removeUserFromWorkgroup(userId, workgroupId, _currentUser.id);
 
                 MessageBox.Show("Responsibility assigned successfully.");
             }

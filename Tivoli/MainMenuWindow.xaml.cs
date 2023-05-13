@@ -70,7 +70,7 @@ namespace Tivoli
         private void AssignResponsibilitiesButton_Click(object sender, RoutedEventArgs e)
         {
             // Implement assign responsibilities functionality
-            AssignResponsibilitiesWindow assignResponsibilitiesWindow = new AssignResponsibilitiesWindow(dbhelper);
+            AssignResponsibilitiesWindow assignResponsibilitiesWindow = new AssignResponsibilitiesWindow(_currentUser,dbhelper);
             assignResponsibilitiesWindow.ShowDialog();
         }
 
@@ -96,7 +96,7 @@ namespace Tivoli
         private void AssignUsersToWorkgroupsButton_Click(object sender, RoutedEventArgs e)
         {
             // Open the UserWorkgroupAssignmentWindow
-            AssignResponsibilitiesWindow assignResponsibilitiesWindow = new AssignResponsibilitiesWindow(dbhelper);
+            AssignResponsibilitiesWindow assignResponsibilitiesWindow = new AssignResponsibilitiesWindow(_currentUser, dbhelper);
             assignResponsibilitiesWindow.ShowDialog();
         }
 

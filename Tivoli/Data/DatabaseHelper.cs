@@ -149,9 +149,9 @@ namespace Tivoli.Data
 
         public List<UserTivoli> GetAllUsers()
         {
-             using (var context = new MyDatabaseContext())
+            using (var context = new MyDatabaseContext())
             {
-               return context.Users.ToList();
+                return context.Users.ToList();
             }
         }
 
@@ -316,11 +316,16 @@ namespace Tivoli.Data
             }
         }
 
-        public List<RequestTivoli> GetUserRequests(UserTivoli user)
+        public List<RequestTivoli> GetUserRequests(int  userID)
         {
             using (var context = new MyDatabaseContext())
             {
-                if (user.IsAdmin)
+                UserTivoli currentuser = context.Users.First(u => u.id == userID);
+               
+
+
+
+                if (currentuser.role == "admin")
                 {
                     // If the user is an admin, return all pending requests
                     return context.Requests
@@ -329,22 +334,35 @@ namespace Tivoli.Data
                         .Where(r => r.Status == "Pending")
                         .ToList();
                 }
-                else
+                else  
                 {
+
+                    if (currentuser.workgroupId != null)
+                    {
+                        WorkgroupTivoli workgroup = context.Workgroups.First(u => u.Id == currentuser.workgroupId);
+
+                        return context.Requests
+                      .Include(r => r.User)
+                      .Include(r => r.Workgroup)
+                      .Where(r => r.Status == "Pending" && r.Workgroup.LeaderId == currentuser.id)
+                      .ToList();
+                    }
                     // If the user is a group leader, return only the requests related to their workgroup
-                    return context.Requests
-                        .Include(r => r.User)
-                        .Include(r => r.Workgroup)
-                        .Where(r => r.Status == "Pending" && r.Workgroup.LeaderId == user.id)
-                        .ToList();
+                    else
+                    {
+                        return new List<RequestTivoli>();
+                    }
+
                 }
             }
         }
 
-        public bool AddUserToWorkgroup(int userID, int workgroupID)
+        public bool AddUserToWorkgroup(int userID, int workgroupID, int currentuserID)
         {
             using (var context = new MyDatabaseContext())
             {
+                UserTivoli currentuser = context.Users.First(u => u.id == currentuserID);
+
                 UserTivoli user = context.Users.First(u => u.id == userID);
                 WorkgroupTivoli workgroup = context.Workgroups.First(u => u.Id == workgroupID);
                 // Check if the user is already in another workgroup
@@ -355,28 +373,73 @@ namespace Tivoli.Data
                     return false;
 
                 }
-                    
 
-                // Add the user to the workgroup
-                workgroup.Users.Add(user);
+
+
+                if (currentuser.role == "admin")
+                {
+
+                    workgroup.Users.Add(user);
+                    Logger.Log($"Added user {user.username} to workgroup {workgroup.Name}.");
+
+                }
+                else if (currentuser.Workgroup.Name == "Hr")
+                {
+                    // If the user performing the action is HR, create a request
+                    RequestTivoli request = new RequestTivoli
+                    {
+                        User = user,
+                        Workgroup = workgroup,
+                        RequestType = "AddUserToWorkgroup",
+                    };
+                    context.Requests.Add(request);
+                    Logger.Log($"HR {currentuser.username} created a request to add user {user.username} to workgroup {workgroup.Name}.");
+                }
+                else
+                {
+                    Logger.Log($"Failed to add user {user.username} to workgroup {workgroup.Name}: UserTivoli is already in another workgroup.");
+
+                    return false;
+                }
+
+
+
                 context.SaveChanges();
-                Logger.Log($"Added user {user.username} to workgroup {workgroup.Name}.");
+
 
                 return true;
             }
         }
 
-        public void removeUserFromWorkgroup(int userID,  int workgroupID)
+        public bool removeUserFromWorkgroup(int userID, int workgroupID, int currentuserID)
         {
             using (var context = new MyDatabaseContext())
             {
-                // Check if the user is already in another workgroup
+                UserTivoli currentuser = context.Users.First(u => u.id == currentuserID);
                 UserTivoli user = context.Users.First(u => u.id == userID);
                 WorkgroupTivoli workgroup = context.Workgroups.First(u => u.Id == workgroupID);
-               // user.workgroupId = null;
-                // Add the user to the workgroup
-                workgroup.Users.Remove(user);             
-                context.SaveChanges();
+                if (currentuser.role =="admin") // Check if the user is an admin
+                {
+                    workgroup.Users.Remove(user);
+                    context.SaveChanges();
+                    Logger.Log($"User {currentuser.username} removed user {user.username} from workgroup {workgroup.Name}");
+                    return true;
+                }
+                else if (currentuser.role == "Hr") // Check if the user is an HR
+                {
+                    RequestTivoli request = new RequestTivoli
+                    {
+                        User = user,
+                        Workgroup = workgroup,
+                        RequestType = "RemoveUserFromWorkgroup",
+                        Status = "Hr"
+                    };
+                    context.Requests.Add(request);
+                    context.SaveChanges();
+                    Logger.Log($"User {currentuser.username} created a request to remove user {user.username} from workgroup {workgroup.Name}");
+                    return true;
+                }
+                return false;
             }
 
         }
@@ -416,6 +479,29 @@ namespace Tivoli.Data
             }
 
 
+        }
+
+        public bool ApproveRequest(int requestID, int performedByUserID)
+        {
+            
+            using (var context = new MyDatabaseContext())
+            {
+                UserTivoli performedByUser = context.Users.First(u => u.id == performedByUserID);
+                RequestTivoli request = context.Requests.First(u => u.Id == requestID);
+                context.Requests.Attach(request);
+                if (performedByUser.IsAdmin) // Check if the user is an admin
+                {
+                    request.Status = "Approved";
+                    if (request.RequestType == "RemoveUserFromWorkgroup")
+                    {
+                        request.Workgroup.Users.Remove(request.User);
+                    }
+                    context.SaveChanges();
+                    Logger.Log($"Admin {performedByUser.username} approved request {request.Id}");
+                    return true;
+                }
+                return false;
+            }
         }
     }
 }

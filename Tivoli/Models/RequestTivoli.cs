@@ -29,6 +29,7 @@ namespace Tivoli.Models
 
         // Navigation properties
 
+        public string ? RequestType { get; set; }
 
         [JsonIgnore]
         public virtual UserTivoli User { get; set; }

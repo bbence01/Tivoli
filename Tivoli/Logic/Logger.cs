@@ -9,48 +9,41 @@ using System.Text;
 
 namespace Tivoli.Logic
 {
-    public static class Logger
+    public class Logger
     {
-        private static readonly string logFilePath = "log.txt";
-        private static readonly byte[] key = Encoding.UTF8.GetBytes("A long and secure key here");
-        private static readonly byte[] iv = Encoding.UTF8.GetBytes("A 16 byte IV here");
+        private static string logFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LogFile.log");
+        private static byte[] salt = Encoding.UTF8.GetBytes("a 16 byte salt"); // Replace with your salt
+        private static string passphrase = "your passphrase"; // Replace with your passphrase
 
         public static void Log(string message)
         {
+            string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            string logEntry = $"{timestamp} - {message}\n";
+
+            Rfc2898DeriveBytes deriveBytes = new Rfc2898DeriveBytes(passphrase, salt);
+            byte[] key = deriveBytes.GetBytes(32); // Get a 32-byte key
+            byte[] iv = deriveBytes.GetBytes(16); // Get a 16-byte IV
+
             using (Aes aes = Aes.Create())
             {
-                ICryptoTransform encryptor = aes.CreateEncryptor(key, iv);
+                aes.Key = key;
+                aes.IV = iv;
 
-                using (FileStream fileStream = new FileStream(logFilePath, FileMode.Append))
+                using (ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV))
                 {
-                    using (CryptoStream cryptoStream = new CryptoStream(fileStream, encryptor, CryptoStreamMode.Write))
+                    using (FileStream fileStream = new FileStream(logFilePath, FileMode.Append, FileAccess.Write))
                     {
-                        using (StreamWriter writer = new StreamWriter(cryptoStream))
+                        using (CryptoStream cryptoStream = new CryptoStream(fileStream, encryptor, CryptoStreamMode.Write))
                         {
-                            writer.WriteLine($"{DateTime.Now}: {message}");
-                        }
-                    }
-                }
-            }
-        }
-
-        public static string ReadLogs()
-        {
-            using (Aes aes = Aes.Create())
-            {
-                ICryptoTransform decryptor = aes.CreateDecryptor(key, iv);
-
-                using (FileStream fileStream = new FileStream(logFilePath, FileMode.Open))
-                {
-                    using (CryptoStream cryptoStream = new CryptoStream(fileStream, decryptor, CryptoStreamMode.Read))
-                    {
-                        using (StreamReader reader = new StreamReader(cryptoStream))
-                        {
-                            return reader.ReadToEnd();
+                            using (StreamWriter streamWriter = new StreamWriter(cryptoStream))
+                            {
+                                streamWriter.Write(logEntry);
+                            }
                         }
                     }
                 }
             }
         }
     }
+
 }

@@ -29,7 +29,7 @@ namespace Tivoli
         UserTivoli _currentUser;
         public ManageUserRequestsWindow(UserTivoli user, MyDatabaseContext context, DatabaseHelper dbhelper)
         {
-            _currentUser = user;
+            this._currentUser = user;
             this.context = context;
             this.dbHelper = dbhelper;
             InitializeComponent();
@@ -41,7 +41,7 @@ namespace Tivoli
 
         private void LoadUserRequests()
         {
-            List<RequestTivoli> userRequests = dbHelper.GetUserRequests(_currentUser);
+            List<RequestTivoli> userRequests = dbHelper.GetUserRequests(_currentUser.id);
             UserRequestsDataGrid.ItemsSource = userRequests;
             
 
@@ -54,7 +54,7 @@ namespace Tivoli
             {
                 // Update the RequestTivoli status to "Approved"
                 selectedRequest.Status = "Approved";
-                dbHelper.UpdateUserRequest(selectedRequest);
+                dbHelper.ApproveRequest(selectedRequest.Id, _currentUser.id);
 
                 // Assign user to the workgroup
                 selectedRequest.User.workgroupId = selectedRequest.WorkgroupId;
@@ -72,7 +72,7 @@ namespace Tivoli
             {
                 // Update the RequestTivoli status to "Rejected"
                 selectedRequest.Status = "Rejected";
-                dbHelper.UpdateUserRequest(selectedRequest);
+                dbHelper.ApproveRequest(selectedRequest.Id, _currentUser.id);
 
                 // Refresh the user request list in the UI
                 LoadUserRequests();
