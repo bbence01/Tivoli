@@ -11,6 +11,7 @@ using Tivoli.Models;
 using Tivoli.Data;
 using Tivoli.Logic;
 using System.Drawing;
+using Azure.Core;
 
 namespace Tivoli.Data
 {
@@ -31,7 +32,7 @@ namespace Tivoli.Data
 
 
         // Add a new user to the database
-        public void AddUser(User user)
+        public void AddUser(UserTivoli user)
         {
             using (SqlConnection connection = GetConnection())
             {
@@ -55,7 +56,7 @@ namespace Tivoli.Data
 
 
         // Update an existing user in the database
-        /* public void UpdateUser(User user)
+        /* public void UpdateUser(UserTivoli user)
          {
              using (SqlConnection connection = GetConnection())
              {
@@ -76,7 +77,7 @@ namespace Tivoli.Data
          }*/
 
         // Delete a user from the database
-        public void DeleteUser(User user)
+        public void DeleteUser(UserTivoli user)
         {
             using (SqlConnection connection = GetConnection())
             {
@@ -90,10 +91,11 @@ namespace Tivoli.Data
         }
 
         // Get all users from the database
-        public List<User> GetAllUsers()
+        /*
+        public List<UserTivoli> GetAllUsers()
         {
             int type = 5;
-            List<User> users = new List<User>();
+            List<UserTivoli> users = new List<UserTivoli>();
 
             using (SqlConnection connection = GetConnection())
             {
@@ -107,7 +109,7 @@ namespace Tivoli.Data
 
                             if (reader["WorkgroupId"] is DBNull)
                             {
-                                User user = new User
+                                UserTivoli user = new UserTivoli
                             (
                                  (int)reader["Id"],
                                  (string)reader["Username"],
@@ -121,7 +123,7 @@ namespace Tivoli.Data
                             }
                             else
                             {
-                                User user = new User
+                                UserTivoli user = new UserTivoli
                             (
                                  (int)reader["Id"],
                                  (string)reader["Username"],
@@ -143,16 +145,31 @@ namespace Tivoli.Data
             }
 
             return users;
+        }*/
+
+        public List<UserTivoli> GetAllUsers()
+        {
+             using (var context = new MyDatabaseContext())
+            {
+               return context.Users.ToList();
+            }
         }
 
+        public List<WorkgroupTivoli> GetAllWorkgroups()
+        {
+            using (var context = new MyDatabaseContext())
+            {
+                return context.Workgroups.ToList();
+            }
+        }
 
-        public void ArchiveUserInDatabase(User user)
+        public void ArchiveUserInDatabase(UserTivoli user)
         {
             user.IsActive = false;
         }
 
 
-        public void AddWorkgroup(Workgroup workgroup)
+        public void AddWorkgroup(WorkgroupTivoli workgroup)
         {
             using (SqlConnection connection = GetConnection())
             {
@@ -171,11 +188,11 @@ namespace Tivoli.Data
         }
 
 
-
-        public List<Workgroup> GetAllWorkgroups()
+        /*
+        public List<WorkgroupTivoli> GetAllWorkgroups()
         {
             // Retrieve workgroups from the database.
-            List<Workgroup> workergroups = new List<Workgroup>();
+            List<WorkgroupTivoli> workergroups = new List<WorkgroupTivoli>();
 
             using (SqlConnection connection = GetConnection())
             {
@@ -186,7 +203,7 @@ namespace Tivoli.Data
                     {
                         while (reader.Read())
                         {
-                            Workgroup wg = new Workgroup
+                            WorkgroupTivoli wg = new WorkgroupTivoli
                             (
                                  (int)reader["Id"],
                                  (string)reader["Name"],
@@ -201,7 +218,7 @@ namespace Tivoli.Data
 
             return workergroups;
         }
-
+        */
         public void AssignResponsibility(int userId, int workgroupId)
         {
             using (SqlConnection connection = GetConnection())
@@ -217,7 +234,7 @@ namespace Tivoli.Data
             }
         }
 
-        public void AddUserRequest(Request userRequest)
+        public void AddUserRequest(RequestTivoli userRequest)
         {
             using (MyDatabaseContext context = new MyDatabaseContext())
             {
@@ -226,15 +243,15 @@ namespace Tivoli.Data
             }
         }
         /*
-        public List<Request> GetUserRequests()
+        public List<RequestTivoli> GetUserRequests()
         {
             using (MyDatabaseContext context = new MyDatabaseContext())
             {
-                return context.UserRequests.Include(ur => ur.User).Include(ur => ur.Workgroup).ToList();
+                return context.UserRequests.Include(ur => ur.UserTivoli).Include(ur => ur.WorkgroupTivoli).ToList();
             }
         }
 
-        public void UpdateUserRequest(Request userRequest)
+        public void UpdateUserRequest(RequestTivoli userRequest)
         {
             using (MyDatabaseContext context = new MyDatabaseContext())
             {
@@ -243,7 +260,7 @@ namespace Tivoli.Data
             }
         }
 
-        public void DeleteUserRequest(Request userRequest)
+        public void DeleteUserRequest(RequestTivoli userRequest)
         {
             using (MyDatabaseContext context = new MyDatabaseContext())
             {
@@ -252,19 +269,19 @@ namespace Tivoli.Data
             }
         }*/
         /*
-        public List<Request> GetUserRequests()
+        public List<RequestTivoli> GetUserRequests()
         {
             using (var context = new MyDatabaseContext())
             {
                 return context.Requests
-                    .Include(r => r.User)
-                    .Include(r => r.Workgroup)
+                    .Include(r => r.UserTivoli)
+                    .Include(r => r.WorkgroupTivoli)
                     .Where(r => r.Status == "Pending")
                     .ToList();
             }
         }*/
 
-        public void UpdateUserRequest(Request request)
+        public void UpdateUserRequest(RequestTivoli request)
         {
             using (var context = new MyDatabaseContext())
             {
@@ -274,7 +291,7 @@ namespace Tivoli.Data
             }
         }
 
-        public void UpdateUser(User user)
+        public void UpdateUser(UserTivoli user)
         {
             using (var context = new MyDatabaseContext())
             {
@@ -284,7 +301,7 @@ namespace Tivoli.Data
             }
         }
 
-        public bool MakeUserLeader(User user, Workgroup workgroup)
+        public bool MakeUserLeader(UserTivoli user, WorkgroupTivoli workgroup)
         {
             using (var context = new MyDatabaseContext())
             {
@@ -293,13 +310,13 @@ namespace Tivoli.Data
                     return false;
 
                 // Set the user as the leader of the workgroup
-                workgroup.Leader = user;
+                workgroup.LeaderId = user.id;
                 context.SaveChanges();
                 return true;
             }
         }
 
-        public List<Request> GetUserRequests(User user)
+        public List<RequestTivoli> GetUserRequests(UserTivoli user)
         {
             using (var context = new MyDatabaseContext())
             {
@@ -328,15 +345,23 @@ namespace Tivoli.Data
         {
             using (var context = new MyDatabaseContext())
             {
-                User user = context.Users.First(u => u.id == userID);
-                Workgroup workgroup = context.Workgroups.First(u => u.Id == workgroupID);
+                UserTivoli user = context.Users.First(u => u.id == userID);
+                WorkgroupTivoli workgroup = context.Workgroups.First(u => u.Id == workgroupID);
                 // Check if the user is already in another workgroup
-                if (context.Users.Any(u => u.id == user.id && u.Workgroup != null))
+                if (context.Users.Any(u => u.id == user.id && u.Workgroup != null) || user.Workgroup != null)
+                {
+                    Logger.Log($"Failed to add user {user.username} to workgroup {workgroup.Name}: UserTivoli is already in another workgroup.");
+
                     return false;
+
+                }
+                    
 
                 // Add the user to the workgroup
                 workgroup.Users.Add(user);
                 context.SaveChanges();
+                Logger.Log($"Added user {user.username} to workgroup {workgroup.Name}.");
+
                 return true;
             }
         }
@@ -346,18 +371,17 @@ namespace Tivoli.Data
             using (var context = new MyDatabaseContext())
             {
                 // Check if the user is already in another workgroup
-                User user = context.Users.First(u => u.id == userID);
-                Workgroup workgroup = context.Workgroups.First(u => u.Id == workgroupID);
-                user.workgroupId = null;
+                UserTivoli user = context.Users.First(u => u.id == userID);
+                WorkgroupTivoli workgroup = context.Workgroups.First(u => u.Id == workgroupID);
+               // user.workgroupId = null;
                 // Add the user to the workgroup
-                workgroup.Users.Remove(user);
-                UpdateUser(user);
+                workgroup.Users.Remove(user);             
                 context.SaveChanges();
             }
 
         }
 
-        public User getUserById(int id)
+        public UserTivoli getUserById(int id)
         {
             using (var context = new MyDatabaseContext())
             {
@@ -370,7 +394,7 @@ namespace Tivoli.Data
         }
 
 
-        public Workgroup getWorkgroupById(int id)
+        public WorkgroupTivoli getWorkgroupById(int id)
         {
             using (var context = new MyDatabaseContext())
             {
@@ -382,7 +406,7 @@ namespace Tivoli.Data
 
         }
 
-        public Request getRequestById(int id)
+        public RequestTivoli getRequestById(int id)
         {
             using (var context = new MyDatabaseContext())
             {

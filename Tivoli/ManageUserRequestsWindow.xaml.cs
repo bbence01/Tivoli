@@ -26,8 +26,8 @@ namespace Tivoli
     {
         MyDatabaseContext context;
         DatabaseHelper dbHelper;
-        User _currentUser;
-        public ManageUserRequestsWindow(User user, MyDatabaseContext context, DatabaseHelper dbhelper)
+        UserTivoli _currentUser;
+        public ManageUserRequestsWindow(UserTivoli user, MyDatabaseContext context, DatabaseHelper dbhelper)
         {
             _currentUser = user;
             this.context = context;
@@ -41,7 +41,7 @@ namespace Tivoli
 
         private void LoadUserRequests()
         {
-            List<Request> userRequests = dbHelper.GetUserRequests(_currentUser);
+            List<RequestTivoli> userRequests = dbHelper.GetUserRequests(_currentUser);
             UserRequestsDataGrid.ItemsSource = userRequests;
             
 
@@ -49,10 +49,10 @@ namespace Tivoli
 
         private void ApproveButton_Click(object sender, RoutedEventArgs e)
         {
-            Request selectedRequest = (Request)UserRequestsDataGrid.SelectedItem;
+            RequestTivoli selectedRequest = (RequestTivoli)UserRequestsDataGrid.SelectedItem;
             if (selectedRequest != null)
             {
-                // Update the Request status to "Approved"
+                // Update the RequestTivoli status to "Approved"
                 selectedRequest.Status = "Approved";
                 dbHelper.UpdateUserRequest(selectedRequest);
 
@@ -67,10 +67,10 @@ namespace Tivoli
 
         private void RejectButton_Click(object sender, RoutedEventArgs e)
         {
-            Request selectedRequest = (Request)UserRequestsDataGrid.SelectedItem;
+            RequestTivoli selectedRequest = (RequestTivoli)UserRequestsDataGrid.SelectedItem;
             if (selectedRequest != null)
             {
-                // Update the Request status to "Rejected"
+                // Update the RequestTivoli status to "Rejected"
                 selectedRequest.Status = "Rejected";
                 dbHelper.UpdateUserRequest(selectedRequest);
 

@@ -26,9 +26,9 @@ namespace Tivoli
 
 
 
-        private User _currentUser;
+        private UserTivoli _currentUser;
 
-        public UserProfileWindow(User user)
+        public UserProfileWindow(UserTivoli user)
         {
             InitializeComponent();
             _currentUser = user;

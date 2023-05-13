@@ -23,9 +23,9 @@ namespace Tivoli
     /// </summary>
     public partial class UserEditWindow : Window
     {
-        private User _user;
+        private UserTivoli _user;
 
-        public UserEditWindow(User user)
+        public UserEditWindow(UserTivoli user)
         {
             InitializeComponent();
             _user = user;
@@ -53,13 +53,13 @@ namespace Tivoli
             if (_user == null)
             {
                 // Create a new user object and populate it with data from the input fields
-                _user = new User
+                _user = new UserTivoli
                 (
                      UsernameTextBox.Text,
                      FullNameTextBox.Text,
                      EmailTextBox.Text,
-                     User.HashPassword(PasswordBox.Password), // Hash the password before storing
-                     RoleComboBox.SelectedIndex == 1 ? "Admin" : "User",
+                     UserTivoli.HashPassword(PasswordBox.Password), // Hash the password before storing
+                     RoleComboBox.SelectedIndex == 1 ? "Admin" : "UserTivoli",
                      true
                 );
 
@@ -78,9 +78,9 @@ namespace Tivoli
                 // Only update the password if the user has entered a new one
                 if (!string.IsNullOrEmpty(PasswordBox.Password))
                 {
-                    _user.passwordHash = User.HashPassword(PasswordBox.Password);
+                    _user.passwordHash = UserTivoli.HashPassword(PasswordBox.Password);
                 }
-                _user.role = RoleComboBox.SelectedIndex == 1 ? "Admin" : "User";
+                _user.role = RoleComboBox.SelectedIndex == 1 ? "Admin" : "UserTivoli";
 
                 // Update the user in the database
                 // Replace this with your actual method for updating a user in the database
@@ -92,12 +92,12 @@ namespace Tivoli
             Close();
         }
 
-        private void UpdateUserInDatabase(User user)
+        private void UpdateUserInDatabase(UserTivoli user)
         {
             throw new NotImplementedException();
         }
 
-        private void AddUserToDatabase(User user)
+        private void AddUserToDatabase(UserTivoli user)
         {
             throw new NotImplementedException();
         }

@@ -7,13 +7,13 @@ namespace Tivoli.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class MyModelChanges : IMigrationMetadata
+    public sealed partial class hrr : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(MyModelChanges));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(hrr));
         
         string IMigrationMetadata.Id
         {
-            get { return "202304251828577_MyModelChanges"; }
+            get { return "202305131316588_hrr"; }
         }
         
         string IMigrationMetadata.Source

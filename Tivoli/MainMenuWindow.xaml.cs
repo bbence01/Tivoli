@@ -25,10 +25,10 @@ namespace Tivoli
 
 
         DatabaseHelper dbhelper; 
-        private User _currentUser;
+        private UserTivoli _currentUser;
         MyDatabaseContext context;
 
-        public MainMenuWindow(User user, DatabaseHelper dbhelper , MyDatabaseContext context)
+        public MainMenuWindow(UserTivoli user, DatabaseHelper dbhelper , MyDatabaseContext context)
         {
             this.context = context;
             _currentUser = user;
@@ -88,7 +88,7 @@ namespace Tivoli
 
             if (result.HasValue && result.Value)
             {
-                MessageBox.Show("Workgroup created successfully.");
+                MessageBox.Show("WorkgroupTivoli created successfully.");
                 // Refresh the list of workgroups if necessary
             }
         }

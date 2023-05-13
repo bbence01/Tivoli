@@ -23,8 +23,8 @@
             <ComboBox x:Name="WorkgroupComboBox" Width="200"/>
         </StackPanel>
 
-        <Button x:Name="AssignResponsibilityButton" Grid.Row="2" Content="Assign Responsibility" Click="AssignResponsibilityButton_Click"/>
-        <Button x:Name="RemoveResponsibilityButton" Grid.Row="3" Content="Remove Responsibility" Click="RemoveResponsibilityButton_Click"/>
+        <Button x:Name="AssignResponsibilityButton" Grid.Row="2" Content="Assign Responsibility" Click="AssignResponsibilityButton_Click" Margin="0,0,0,175"/>
+        <Button x:Name="RemoveResponsibilityButton" Grid.Row="2" Content="Remove Responsibility" Click="RemoveResponsibilityButton_Click" Margin="0,175,0,0"/>
 
     </Grid>
 </Window>

@@ -27,7 +27,7 @@ namespace Tivoli
         private void LoadUsers()
         {
             // Replace this with your actual method of retrieving users from the database
-            List<User> users = dbhelper.GetAllUsers();
+            List<UserTivoli> users = dbhelper.GetAllUsers();
 
             UsersDataGrid.ItemsSource = users;
         }
@@ -44,7 +44,7 @@ namespace Tivoli
 
         private void EditUserButton_Click(object sender, RoutedEventArgs e)
         {
-            User selectedUser = UsersDataGrid.SelectedItem as User;
+            UserTivoli selectedUser = UsersDataGrid.SelectedItem as UserTivoli;
             if (selectedUser != null)
             {
                 UserEditWindow userEditWindow = new UserEditWindow(selectedUser);
@@ -59,7 +59,7 @@ namespace Tivoli
 
         private void DeleteUserButton_Click(object sender, RoutedEventArgs e)
         {
-            User selectedUser = UsersDataGrid.SelectedItem as User;
+            UserTivoli selectedUser = UsersDataGrid.SelectedItem as UserTivoli;
             if (selectedUser != null)
             {
                 // Replace this with your actual method of deleting users from the database
@@ -71,7 +71,7 @@ namespace Tivoli
 
         private void ArchiveUserButton_Click(object sender, RoutedEventArgs e)
         {
-            User selectedUser = UsersDataGrid.SelectedItem as User;
+            UserTivoli selectedUser = UsersDataGrid.SelectedItem as UserTivoli;
             if (selectedUser != null)
             {
                 // Replace this with your actual method of archiving users in the database

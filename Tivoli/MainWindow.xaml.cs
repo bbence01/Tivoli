@@ -59,7 +59,7 @@ namespace Tivoli
             string username = UsernameTextBox.Text;
             string password = PasswordBox.Password;
 
-            User authenticatedUser = User.Authenticate(username, password,_databaseContext);
+            UserTivoli authenticatedUser = UserTivoli.Authenticate(username, password,_databaseContext);
 
 
 
@@ -82,7 +82,7 @@ namespace Tivoli
                 Username = UsernameTextBox.Text,
                 Password = PasswordBox.Password,
                // Role = RoleComboBox.SelectedItem.ToString() // Assuming you have a ComboBox for the role selection
-               Role = "User"
+               Role = "UserTivoli"
             };
 
             var validationResults = UserRegistration.ValidateUserRegistration(registration);
@@ -94,11 +94,11 @@ namespace Tivoli
             }
             else
             {
-                User registeredUser = UserRegistration.RegisterUser(registration);
+                UserTivoli registeredUser = UserRegistration.RegisterUser(registration);
 
                 if (registeredUser != null)
                 {
-                    MessageBox.Show("User registration successful.", "Registration", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("UserTivoli registration successful.", "Registration", MessageBoxButton.OK, MessageBoxImage.Information);
                     // Optionally, navigate back to the login screen or perform any other desired action
                 }
                 else

@@ -20,6 +20,7 @@ namespace Tivoli.Data
         public MyDatabaseInitializer(MyDatabaseContext context)
         {
             Seed(context);
+
         }
 
 
@@ -36,14 +37,14 @@ namespace Tivoli.Data
                 this.hashedPassword = BitConverter.ToString(hashedPasswordBytes).Replace("-", "").ToLower();
             }
             */
-
+         
 
             password = "admin";
             hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
 
 
             // Create an admin user
-            User adminUser = new User
+            UserTivoli adminUser = new UserTivoli
             (
 
                 "admin",
@@ -57,19 +58,19 @@ namespace Tivoli.Data
             password = "user";
             hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
 
-            User basicuser = new User
+            UserTivoli basicuser = new UserTivoli
           (
 
               "user",
                hashedPassword,
-              "User",
-               "User Man",
+              "UserTivoli",
+               "UserTivoli Man",
                "user@example.com",
                true
           );
 
 
-            Workgroup Worker = new Workgroup
+            WorkgroupTivoli Worker = new WorkgroupTivoli
                 (
 
                 "Basic Workers",

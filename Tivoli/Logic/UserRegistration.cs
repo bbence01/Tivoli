@@ -36,7 +36,7 @@ namespace Tivoli.Logic
 
 
 
-        public static User RegisterUser(UserRegistration registration)
+        public static UserTivoli RegisterUser(UserRegistration registration)
         {
             using (var dbContext = new MyDatabaseContext())
             {
@@ -47,10 +47,10 @@ namespace Tivoli.Logic
                 }
 
                 // Hash the password
-                string passwordHash = User.HashPassword(registration.Password);
+                string passwordHash = UserTivoli.HashPassword(registration.Password);
 
                 // Create a new user with the hashed password
-                User newUser = new User
+                UserTivoli newUser = new UserTivoli
                 (
                      registration.Username,
                      passwordHash,

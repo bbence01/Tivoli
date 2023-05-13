@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 using Tivoli.Models;
 using Tivoli.Data;
 using Tivoli.Logic;
+using System.Text.Json.Serialization;
 
 namespace Tivoli.Models
 {
-    public class Workgroup
+    public class WorkgroupTivoli
     {
 
         [Key]
@@ -20,37 +21,42 @@ namespace Tivoli.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+
+
         public int LeaderId { get; set; } // New field for the Leader
-        public virtual User Leader { get; set; } // New field for the Leader
+      
+
+        
+        [JsonIgnore]
+        public virtual List<RequestTivoli> Requests { get; set; }
+        
+        [JsonIgnore]
+        public virtual List<UserTivoli> Users { get; set; }
 
 
-        public virtual ICollection<Request> Requests { get; set; }
-        public virtual ICollection<User> Users { get; set; }
 
-
-
-        public Workgroup(int idW)
+        public WorkgroupTivoli(int idW)
         {
             Id = idW;
         }
 
-        public Workgroup(string name, string description)
+        public WorkgroupTivoli(string name, string description)
         {
             Name = name;
             Description = description;
 
         }
 
-        public Workgroup() { }
+        public WorkgroupTivoli() { }
 
-        public Workgroup(int id, string name, string description)
+        public WorkgroupTivoli(int id, string name, string description)
         {
             Id = id;
             Name = name;
             Description = description;
         }
 
-        public Workgroup(string name, string description, int Leaderid)
+        public WorkgroupTivoli(string name, string description, int Leaderid)
         {
             Name = name;
             Description = description;

@@ -6,10 +6,11 @@ using Tivoli.Data;
 using Tivoli.Models;
 using Tivoli.Data;
 using Tivoli.Logic;
+using System.Text.Json.Serialization;
 
 namespace Tivoli.Models
 {
-    public class User
+    public class UserTivoli
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -21,15 +22,21 @@ namespace Tivoli.Models
         private string FullName;
         private string Email;
         private bool isActive;
+        [ForeignKey(nameof(Models.WorkgroupTivoli))]
         private int? WorkgroupId;
         public bool EmailConfirmed { get; set; }
 
         public bool IsAdmin { get; set; }
 
 
-        // Navigation property to Workgroup
-        public virtual Workgroup Workgroup { get; set; }
-        public virtual ICollection<Request> Requests { get; set; }
+        // Navigation property to WorkgroupTivoli
+        [JsonIgnore]
+
+
+        public virtual WorkgroupTivoli Workgroup { get; set; }
+        
+        [JsonIgnore]
+        public virtual List<RequestTivoli> Requests { get; set; }
 
 
 
@@ -43,7 +50,7 @@ namespace Tivoli.Models
         public int? workgroupId { get => WorkgroupId; set => WorkgroupId = value; }
 
 
-        public User(string username, string passwordHash, string role, string fullName, string email, bool isActive, int? workgroupId = null)
+        public UserTivoli(string username, string passwordHash, string role, string fullName, string email, bool isActive, int? workgroupId = null)
         {
             Username = username;
             PasswordHash = passwordHash;
@@ -54,9 +61,9 @@ namespace Tivoli.Models
             WorkgroupId = workgroupId;
         }
 
-        public User() { }
+        public UserTivoli() { }
 
-        public User(int id, string username, string passwordHash, string role, string fullName, string email, bool isActive)
+        public UserTivoli(int id, string username, string passwordHash, string role, string fullName, string email, bool isActive)
         {
             Id = id;
             Username = username;
@@ -67,12 +74,12 @@ namespace Tivoli.Models
             this.isActive = isActive;
         }
 
-        public User(int id)
+        public UserTivoli(int id)
         {
             Id = id;
         }
 
-        public User(int id, string username, string passwordHash, string role, string fullName, string email, bool isActive, int? workgroupId)
+        public UserTivoli(int id, string username, string passwordHash, string role, string fullName, string email, bool isActive, int? workgroupId)
         {
             Id = id;
             Username = username;
@@ -86,22 +93,22 @@ namespace Tivoli.Models
 
 
         /*
-        private List<User> users = new List<User>
+        private List<UserTivoli> users = new List<UserTivoli>
                 {
-                new User { username = "admin", passwordHash = "admin123", role = "Admin" },
-                new User { username = "user", passwordHash = "user123", role = "Regular" }
+                new UserTivoli { username = "admin", passwordHash = "admin123", role = "Admin" },
+                new UserTivoli { username = "user", passwordHash = "user123", role = "Regular" }
                 };
        */
-        // public List<User> Users { get => users; set => users = value; }
+        // public List<UserTivoli> Users { get => users; set => users = value; }
 
 
 
 
-        public static User Authenticate(string username, string password, MyDatabaseContext context)
+        public static UserTivoli Authenticate(string username, string password, MyDatabaseContext context)
         {
             using (context)
             {
-                User user = context.Users.FirstOrDefault(u => u.username == username);
+                UserTivoli user = context.Users.FirstOrDefault(u => u.username == username);
                 if (user != null && VerifyPassword(password, user.PasswordHash))
                 {
                     return user;

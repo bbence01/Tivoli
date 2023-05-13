@@ -43,7 +43,7 @@ namespace Tivoli
             }
 
             // Create a new workgroup object
-            Workgroup newWorkgroup = new Workgroup
+            WorkgroupTivoli newWorkgroup = new WorkgroupTivoli
             {
                 Name = workgroupName,
                 Description = workgroupDescription

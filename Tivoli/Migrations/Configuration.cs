@@ -4,17 +4,15 @@
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
-    using Tivoli.Data;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<MyDatabaseContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<Tivoli.Data.MyDatabaseContext>
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
-            ContextKey = "Tivoli.MyDatabaseContext";
+            AutomaticMigrationsEnabled = true;
         }
 
-        protected override void Seed(MyDatabaseContext context)
+        protected override void Seed(Tivoli.Data.MyDatabaseContext context)
         {
             //  This method will be called after migrating to the latest version.
 

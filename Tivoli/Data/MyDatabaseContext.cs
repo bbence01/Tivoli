@@ -24,15 +24,36 @@ namespace Tivoli.Data
 
         }
 
-        public System.Data.Entity.DbSet<User> Users { get; set; }
+        public System.Data.Entity.DbSet<UserTivoli> Users { get; set; }
 
-        public System.Data.Entity.DbSet<Workgroup> Workgroups { get; set; }
+        public System.Data.Entity.DbSet<WorkgroupTivoli> Workgroups { get; set; }
 
-      //  public virtual ICollection<Azure.Core.Request> Requests { get; set; }
+        //  public virtual ICollection<Azure.Core.RequestTivoli> Requests { get; set; }
 
 
-        public virtual System.Data.Entity.DbSet<Models.Request> Requests { get; set; }
+        public virtual System.Data.Entity.DbSet<RequestTivoli> Requests { get; set; }
 
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UserTivoli>()
+                        .HasOptional(u => u.Workgroup) // If a user can exist without a workgroup, use HasOptional. If not, use HasRequired.
+                        .WithMany(w => w.Users)
+                        .HasForeignKey(u => u.workgroupId)
+                        .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<RequestTivoli>()
+                        .HasRequired(r => r.User) // Assumes a request must have a user.
+                        .WithMany(u => u.Requests)
+                        .HasForeignKey(r => r.UserId)
+                        .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<RequestTivoli>()
+                        .HasRequired(r => r.Workgroup) // Assumes a request must have a workgroup.
+                        .WithMany(w => w.Requests)
+                        .HasForeignKey(r => r.WorkgroupId)
+                        .WillCascadeOnDelete(false);
+        }
 
     }
 
