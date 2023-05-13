@@ -9,7 +9,7 @@ using Tivoli.Logic;
 
 namespace Tivoli.Models
 {
-    public class UserRequest
+    public class Request
     {
         public int Id { get; set; }
         public int UserId { get; set; }
@@ -20,7 +20,7 @@ namespace Tivoli.Models
         public virtual User User { get; set; }
         public virtual Workgroup Workgroup { get; set; }
 
-        public UserRequest(int id, int userId, int workgroupId, string status)
+        public Request(int id, int userId, int workgroupId, string status)
         {
             Id = id;
             UserId = userId;

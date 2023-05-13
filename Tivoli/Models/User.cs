@@ -22,13 +22,25 @@ namespace Tivoli.Models
         private string Email;
         private bool isActive;
         private int? WorkgroupId;
+        public bool EmailConfirmed { get; set; }
 
-
+        public bool IsAdmin { get; set; }
 
 
         // Navigation property to Workgroup
         public virtual Workgroup Workgroup { get; set; }
-        public virtual ICollection<UserRequest> UserRequests { get; set; }
+        public virtual ICollection<Request> Requests { get; set; }
+
+
+
+        public int id { get => Id; set => Id = value; }
+        public string username { get => Username; set => Username = value; }
+        public string passwordHash { get => PasswordHash; set => PasswordHash = value; }
+        public string role { get => Role; set => Role = value; }
+        public string fullname { get => FullName; set => FullName = value; }
+        public string email { get => Email; set => Email = value; }
+        public bool IsActive { get => isActive; set => isActive = value; }
+        public int? workgroupId { get => WorkgroupId; set => WorkgroupId = value; }
 
 
         public User(string username, string passwordHash, string role, string fullName, string email, bool isActive, int? workgroupId = null)
@@ -41,15 +53,6 @@ namespace Tivoli.Models
             this.isActive = isActive;
             WorkgroupId = workgroupId;
         }
-
-        public int id { get => Id; set => Id = value; }
-        public string username { get => Username; set => Username = value; }
-        public string passwordHash { get => PasswordHash; set => PasswordHash = value; }
-        public string role { get => Role; set => Role = value; }
-        public string fullname { get => FullName; set => FullName = value; }
-        public string email { get => Email; set => Email = value; }
-        public bool IsActive { get => isActive; set => isActive = value; }
-        public int? workgroupId { get => WorkgroupId; set => WorkgroupId = value; }
 
         public User() { }
 

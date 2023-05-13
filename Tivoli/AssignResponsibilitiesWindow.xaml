@@ -24,5 +24,7 @@
         </StackPanel>
 
         <Button x:Name="AssignResponsibilityButton" Grid.Row="2" Content="Assign Responsibility" Click="AssignResponsibilityButton_Click"/>
+        <Button x:Name="RemoveResponsibilityButton" Grid.Row="3" Content="Remove Responsibility" Click="RemoveResponsibilityButton_Click"/>
+
     </Grid>
 </Window>

@@ -10,6 +10,7 @@ using System.Data.Entity;
 using Tivoli.Models;
 using Tivoli.Data;
 using Tivoli.Logic;
+using System.Drawing;
 
 namespace Tivoli.Data
 {
@@ -50,26 +51,29 @@ namespace Tivoli.Data
             }
         }
 
+
+
+
         // Update an existing user in the database
-        public void UpdateUser(User user)
-        {
-            using (SqlConnection connection = GetConnection())
-            {
-                connection.Open();
-                using (SqlCommand command = new SqlCommand(
-                    "UPDATE Users SET Username = @Username, FullName = @FullName, Email = @Email, Password = @Password, Role = @Role WHERE Id = @Id",
-                    connection))
-                {
-                    // command.Parameters.AddWithValue("@Id", user.id);
-                    command.Parameters.AddWithValue("@Username", user.username);
-                    command.Parameters.AddWithValue("@FullName", user.fullname);
-                    command.Parameters.AddWithValue("@Email", user.email);
-                    command.Parameters.AddWithValue("@Password", user.passwordHash);
-                    command.Parameters.AddWithValue("@Role", user.role);
-                    command.ExecuteNonQuery();
-                }
-            }
-        }
+        /* public void UpdateUser(User user)
+         {
+             using (SqlConnection connection = GetConnection())
+             {
+                 connection.Open();
+                 using (SqlCommand command = new SqlCommand(
+                     "UPDATE Users SET Username = @Username, FullName = @FullName, Email = @Email, Password = @Password, Role = @Role WHERE Id = @Id",
+                     connection))
+                 {
+                     // command.Parameters.AddWithValue("@Id", user.id);
+                     command.Parameters.AddWithValue("@Username", user.username);
+                     command.Parameters.AddWithValue("@FullName", user.fullname);
+                     command.Parameters.AddWithValue("@Email", user.email);
+                     command.Parameters.AddWithValue("@Password", user.passwordHash);
+                     command.Parameters.AddWithValue("@Role", user.role);
+                     command.ExecuteNonQuery();
+                 }
+             }
+         }*/
 
         // Delete a user from the database
         public void DeleteUser(User user)
@@ -213,16 +217,16 @@ namespace Tivoli.Data
             }
         }
 
-        public void AddUserRequest(UserRequest userRequest)
+        public void AddUserRequest(Request userRequest)
         {
             using (MyDatabaseContext context = new MyDatabaseContext())
             {
-                context.UserRequests.Add(userRequest);
+                context.Requests.Add(userRequest);
                 context.SaveChanges();
             }
         }
-
-        public List<UserRequest> GetUserRequests()
+        /*
+        public List<Request> GetUserRequests()
         {
             using (MyDatabaseContext context = new MyDatabaseContext())
             {
@@ -230,7 +234,7 @@ namespace Tivoli.Data
             }
         }
 
-        public void UpdateUserRequest(UserRequest userRequest)
+        public void UpdateUserRequest(Request userRequest)
         {
             using (MyDatabaseContext context = new MyDatabaseContext())
             {
@@ -239,14 +243,155 @@ namespace Tivoli.Data
             }
         }
 
-        public void DeleteUserRequest(UserRequest userRequest)
+        public void DeleteUserRequest(Request userRequest)
         {
             using (MyDatabaseContext context = new MyDatabaseContext())
             {
                 context.Entry(userRequest).State = EntityState.Deleted;
                 context.SaveChanges();
             }
+        }*/
+        /*
+        public List<Request> GetUserRequests()
+        {
+            using (var context = new MyDatabaseContext())
+            {
+                return context.Requests
+                    .Include(r => r.User)
+                    .Include(r => r.Workgroup)
+                    .Where(r => r.Status == "Pending")
+                    .ToList();
+            }
+        }*/
+
+        public void UpdateUserRequest(Request request)
+        {
+            using (var context = new MyDatabaseContext())
+            {
+                context.Requests.Attach(request);
+                context.Entry(request).State = EntityState.Modified;
+                context.SaveChanges();
+            }
         }
 
+        public void UpdateUser(User user)
+        {
+            using (var context = new MyDatabaseContext())
+            {
+                context.Users.Attach(user);
+                context.Entry(user).State = EntityState.Modified;
+                context.SaveChanges();
+            }
+        }
+
+        public bool MakeUserLeader(User user, Workgroup workgroup)
+        {
+            using (var context = new MyDatabaseContext())
+            {
+                // Check if the current user is admin
+                if (!context.Users.Any(u => u.username == user.username && u.IsAdmin))
+                    return false;
+
+                // Set the user as the leader of the workgroup
+                workgroup.Leader = user;
+                context.SaveChanges();
+                return true;
+            }
+        }
+
+        public List<Request> GetUserRequests(User user)
+        {
+            using (var context = new MyDatabaseContext())
+            {
+                if (user.IsAdmin)
+                {
+                    // If the user is an admin, return all pending requests
+                    return context.Requests
+                        .Include(r => r.User)
+                        .Include(r => r.Workgroup)
+                        .Where(r => r.Status == "Pending")
+                        .ToList();
+                }
+                else
+                {
+                    // If the user is a group leader, return only the requests related to their workgroup
+                    return context.Requests
+                        .Include(r => r.User)
+                        .Include(r => r.Workgroup)
+                        .Where(r => r.Status == "Pending" && r.Workgroup.LeaderId == user.id)
+                        .ToList();
+                }
+            }
+        }
+
+        public bool AddUserToWorkgroup(int userID, int workgroupID)
+        {
+            using (var context = new MyDatabaseContext())
+            {
+                User user = context.Users.First(u => u.id == userID);
+                Workgroup workgroup = context.Workgroups.First(u => u.Id == workgroupID);
+                // Check if the user is already in another workgroup
+                if (context.Users.Any(u => u.id == user.id && u.Workgroup != null))
+                    return false;
+
+                // Add the user to the workgroup
+                workgroup.Users.Add(user);
+                context.SaveChanges();
+                return true;
+            }
+        }
+
+        public void removeUserFromWorkgroup(int userID,  int workgroupID)
+        {
+            using (var context = new MyDatabaseContext())
+            {
+                // Check if the user is already in another workgroup
+                User user = context.Users.First(u => u.id == userID);
+                Workgroup workgroup = context.Workgroups.First(u => u.Id == workgroupID);
+                user.workgroupId = null;
+                // Add the user to the workgroup
+                workgroup.Users.Remove(user);
+                UpdateUser(user);
+                context.SaveChanges();
+            }
+
+        }
+
+        public User getUserById(int id)
+        {
+            using (var context = new MyDatabaseContext())
+            {
+
+
+                return context.Users.FirstOrDefault(u => u.id == id);
+            }
+
+
+        }
+
+
+        public Workgroup getWorkgroupById(int id)
+        {
+            using (var context = new MyDatabaseContext())
+            {
+
+
+                return context.Workgroups.FirstOrDefault(u => u.Id == id);
+            }
+
+
+        }
+
+        public Request getRequestById(int id)
+        {
+            using (var context = new MyDatabaseContext())
+            {
+
+
+                return context.Requests.FirstOrDefault(u => u.Id == id);
+            }
+
+
+        }
     }
 }

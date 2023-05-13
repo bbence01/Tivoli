@@ -61,7 +61,7 @@ namespace Tivoli
             int workgroupId = (int)WorkgroupComboBox.SelectedValue;
 
             // Assign the responsibility in the database.
-            databaseHelper.AssignResponsibility(userId, workgroupId);
+            databaseHelper.AddUserToWorkgroup(userId, workgroupId);
 
             MessageBox.Show("Responsibility assigned successfully.");
         }

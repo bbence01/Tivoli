@@ -104,7 +104,7 @@ namespace Tivoli
 
         private void ManageUserRequestsButton_Click(object sender, RoutedEventArgs e)
         {
-            ManageUserRequestsWindow manageUserRequestsWindow = new ManageUserRequestsWindow(context, dbhelper);
+            ManageUserRequestsWindow manageUserRequestsWindow = new ManageUserRequestsWindow(_currentUser, context, dbhelper);
             manageUserRequestsWindow.ShowDialog();
         }
 

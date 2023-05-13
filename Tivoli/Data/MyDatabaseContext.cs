@@ -11,6 +11,7 @@ using System.Data.Entity;
 using Tivoli.Models;
 using Tivoli.Data;
 using Tivoli.Logic;
+using Azure.Core;
 
 namespace Tivoli.Data
 {
@@ -27,7 +28,10 @@ namespace Tivoli.Data
 
         public System.Data.Entity.DbSet<Workgroup> Workgroups { get; set; }
 
-        public virtual System.Data.Entity.DbSet<UserRequest> UserRequests { get; set; }
+      //  public virtual ICollection<Azure.Core.Request> Requests { get; set; }
+
+
+        public virtual System.Data.Entity.DbSet<Models.Request> Requests { get; set; }
 
 
     }

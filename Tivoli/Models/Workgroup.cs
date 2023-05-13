@@ -13,6 +13,22 @@ namespace Tivoli.Models
 {
     public class Workgroup
     {
+
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("Id", TypeName = "int")]
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public int LeaderId { get; set; } // New field for the Leader
+        public virtual User Leader { get; set; } // New field for the Leader
+
+
+        public virtual ICollection<Request> Requests { get; set; }
+        public virtual ICollection<User> Users { get; set; }
+
+
+
         public Workgroup(int idW)
         {
             Id = idW;
@@ -22,6 +38,7 @@ namespace Tivoli.Models
         {
             Name = name;
             Description = description;
+
         }
 
         public Workgroup() { }
@@ -33,14 +50,13 @@ namespace Tivoli.Models
             Description = description;
         }
 
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("Id", TypeName = "int")]
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public Workgroup(string name, string description, int Leaderid)
+        {
+            Name = name;
+            Description = description;
+            LeaderId = Leaderid;
+        }
 
-        public virtual ICollection<UserRequest> UserRequests { get; set; }
 
     }
 
