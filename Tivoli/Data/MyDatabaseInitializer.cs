@@ -10,6 +10,7 @@ using Tivoli.Models;
 using Tivoli.Models;
 using Tivoli.Data;
 using Tivoli.Logic;
+using System.Data.Entity.Migrations;
 
 namespace Tivoli.Data
 {
@@ -71,7 +72,7 @@ namespace Tivoli.Data
                 "admin",
                  hashedPassword,
                 "Admin",
-                 "Admin Man",
+                 "Admin Man 1",
                  "admin@example.com",
                  true
             );
@@ -85,7 +86,7 @@ namespace Tivoli.Data
               "user",
                hashedPassword,
               "UserTivoli",
-               "UserTivoli Man",
+               "UserTivoli Man 1",
                "user@example.com",
                true
           );
@@ -95,7 +96,7 @@ namespace Tivoli.Data
      "user2",
       hashedPassword,
      "UserTivoli",
-      "UserTivoli Man",
+      "UserTivoli Man 2",
       "user@example.com",
       true
  );
@@ -106,10 +107,10 @@ namespace Tivoli.Data
      "hruser",
       hashedPassword,
      "hr",
-      "UserTivoli Man",
-      "user@example.com",
+      "hruser 1",
+      "hruser@example.com",
       true,
-        3
+       hrgroup.Id
  );
 
 
@@ -120,7 +121,7 @@ namespace Tivoli.Data
 "userhr",
  hashedPassword,
 "hr",
- "UserTivoli Man",
+ "userhr Man 2",
  "user@example.com",
  true
 );
@@ -137,14 +138,14 @@ namespace Tivoli.Data
           "hr",
            hashedPassword,
            "hr",
-           "hr Man",
+           "hr Man 3",
            "hr@example.com",
            true
       );
 
-      
 
-         
+
+
 
 
             if (context.Users.FirstOrDefault(u => u.username == adminUser.username) == null)
@@ -152,10 +153,20 @@ namespace Tivoli.Data
                 context.Users.Add(adminUser);
             }
             // Add the admin user to the Users DbSet
+            else
+            {
+               // context.Users.AddOrUpdate(adminUser);
+
+            }
 
             if (context.Users.FirstOrDefault(u => u.username == hr.username) == null)
             {
                 context.Users.Add(hr);
+            }
+            else
+            {
+               // context.Users.AddOrUpdate(hr);
+
             }
 
 
@@ -163,40 +174,76 @@ namespace Tivoli.Data
             {
                 context.Users.Add(basicuser2);
             }
+                else
+                {
+                   // context.Users.AddOrUpdate(basicuser2);
 
-            if (context.Users.FirstOrDefault(u => u.username == basicuser.username) == null)
+                }
+
+
+                if (context.Users.FirstOrDefault(u => u.username == basicuser.username) == null)
             {
                 context.Users.Add(basicuser);
             }
-            if (context.Users.FirstOrDefault(u => u.username == basicuserhr.username) == null)
+                else
+                {
+                   // context.Users.AddOrUpdate(basicuser);
+
+                }
+                if (context.Users.FirstOrDefault(u => u.username == basicuserhr.username) == null)
             {
                 context.Users.Add(basicuserhr);
             }
-            if (context.Users.FirstOrDefault(u => u.username == hruser.username) == null)
+                else
+                {
+                   // context.Users.AddOrUpdate(basicuserhr);
+
+                }
+                if (context.Users.FirstOrDefault(u => u.username == hruser.username) == null)
             {
                 context.Users.Add(hruser);
             }
+                else
+                {
+                   // context.Users.AddOrUpdate(hruser);
 
-            if (context.Workgroups.FirstOrDefault(w => w.Name == Worker.Name) == null)
+                }
+
+                if (context.Workgroups.FirstOrDefault(w => w.Name == Worker.Name) == null)
             {
                 context.Workgroups.Add(Worker);
 
             }
+                else
+                {
+                   // context.Workgroups.AddOrUpdate(Worker);
 
-            if (context.Workgroups.FirstOrDefault(w => w.Name == Worker2.Name) == null)
+                }
+
+                if (context.Workgroups.FirstOrDefault(w => w.Name == Worker2.Name) == null)
             {
                 context.Workgroups.Add(Worker2);
 
             }
-            if (context.Workgroups.FirstOrDefault(w => w.Name == hrgroup.Name) == null)
+                else
+                {
+                   // context.Workgroups.AddOrUpdate(Worker2);
+
+                }
+                if (context.Workgroups.FirstOrDefault(w => w.Name == hrgroup.Name) == null)
             {
                 context.Workgroups.Add(hrgroup);
 
             }
+                else
+                {
+                   // context.Workgroups.AddOrUpdate(hrgroup);
+
+                }
 
 
-            // Save the changes to the database
-            context.SaveChanges();
+                // Save the changes to the database
+                context.SaveChanges();
 
             base.Seed(context);
         }

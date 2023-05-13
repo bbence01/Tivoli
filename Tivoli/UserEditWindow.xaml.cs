@@ -41,6 +41,7 @@ namespace Tivoli
                 EmailTextBox.Text = _user.email;
                 // Don't populate the password field for security reasons
                 RoleComboBox.SelectedIndex = _user.role == "Admin" ? 1 : 0;
+
             }
             else
             {

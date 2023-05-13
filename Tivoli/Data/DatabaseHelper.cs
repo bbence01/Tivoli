@@ -325,14 +325,15 @@ namespace Tivoli.Data
 
 
 
-                if (currentuser.role == "admin")
+                if (currentuser.role == "Admin")
                 {
                     // If the user is an admin, return all pending requests
-                    return context.Requests
-                        .Include(r => r.User)
-                        .Include(r => r.Workgroup)
-                        .Where(r => r.Status == "Pending")
-                        .ToList();
+                    
+                    List<RequestTivoli> tvr= new List<RequestTivoli>();
+
+                    tvr = context.Requests.ToList();
+
+                    return tvr;
                 }
                 else  
                 {
@@ -376,7 +377,7 @@ namespace Tivoli.Data
 
 
 
-                if (currentuser.role == "admin")
+                if (currentuser.role == "Admin")
                 {
 
                     workgroup.Users.Add(user);
@@ -418,7 +419,7 @@ namespace Tivoli.Data
                 UserTivoli currentuser = context.Users.First(u => u.id == currentuserID);
                 UserTivoli user = context.Users.First(u => u.id == userID);
                 WorkgroupTivoli workgroup = context.Workgroups.First(u => u.Id == workgroupID);
-                if (currentuser.role =="admin") // Check if the user is an admin
+                if (currentuser.role == "Admin") // Check if the user is an admin
                 {
                     workgroup.Users.Remove(user);
                     context.SaveChanges();
@@ -489,18 +490,143 @@ namespace Tivoli.Data
                 UserTivoli performedByUser = context.Users.First(u => u.id == performedByUserID);
                 RequestTivoli request = context.Requests.First(u => u.Id == requestID);
                 context.Requests.Attach(request);
-                if (performedByUser.IsAdmin) // Check if the user is an admin
+                if (performedByUser.role == "Admin") // Check if the user is an admin
                 {
                     request.Status = "Approved";
                     if (request.RequestType == "RemoveUserFromWorkgroup")
                     {
                         request.Workgroup.Users.Remove(request.User);
+                        request.User.workgroupId = null;
+
+                        Logger.Log($"Admin {performedByUser.username} approved remove request {request.Id}");
+
+                    }
+                    else if (request.RequestType == "AddUserToWorkgroup")
+                    {
+                        request.Workgroup.Users.Add(request.User);
+                        request.User.workgroupId = request.Workgroup.Id;
+                        Logger.Log($"Admin {performedByUser.username} approved add request {request.Id}");
+
+
                     }
                     context.SaveChanges();
-                    Logger.Log($"Admin {performedByUser.username} approved request {request.Id}");
                     return true;
+                    
+                    
+
+
+
+                }
+                else if (performedByUserID == request.Workgroup.LeaderId)
+                {
+                    request.Status = "Approved";
+                    if (request.RequestType == "RemoveUserFromWorkgroup")
+                    {
+                        request.Workgroup.Users.Remove(request.User);
+                        request.User.workgroupId = null;
+
+                        Logger.Log($"Leader {performedByUser.username} approved remove request {request.Id}");
+
+                    }
+                    else if (request.RequestType == "AddUserToWorkgroup")
+                    {
+                        request.Workgroup.Users.Add(request.User);
+                        request.User.workgroupId = request.Workgroup.Id;
+
+                        Logger.Log($"Leader {performedByUser.username} approved add request {request.Id}");
+
+
+
+                    }
+                    context.SaveChanges();
+                    return true;
+
+
+
+
+                }
+
+
+                return false;
+            }
+        }
+
+        internal bool RejectRequest(int requestID, int performedByUserID)
+        {
+            using (var context = new MyDatabaseContext())
+            {
+                UserTivoli performedByUser = context.Users.First(u => u.id == performedByUserID);
+                RequestTivoli request = context.Requests.First(u => u.Id == requestID);
+                if (performedByUser.role == "Admin") // Check if the user is an admin
+                {
+                    request.Status = "Approved";
+                    if (request.RequestType == "RemoveUserFromWorkgroup")
+                    {
+                        request.Status = "Rejected";
+
+
+                        Logger.Log($"Admin {performedByUser.username} Rejected remove request {request.Id}");
+
+                    }
+                    else if (request.RequestType == "AddUserToWorkgroup")
+                    {
+                        request.Status = "Rejected";
+                        Logger.Log($"Admin {performedByUser.username} Rejected add request {request.Id}");
+
+
+                    }
+                    context.SaveChanges();
+                    return true;
+
+
+
+
+
+                }
+                else if (performedByUserID == request.Workgroup.LeaderId)
+                {
+                    request.Status = "Rejected";
+                    if (request.RequestType == "RemoveUserFromWorkgroup")
+                    {
+                        request.Status = "Rejected";
+
+
+                        Logger.Log($"Leader {performedByUser.username} Rejected remove request {request.Id}");
+
+                    }
+                    else if (request.RequestType == "AddUserToWorkgroup")
+                    {
+                        request.Status = "Rejected";
+
+
+                        Logger.Log($"Leader {performedByUser.username} Rejected add request {request.Id}");
+
+
+
+                    }
+                    context.SaveChanges();
+                    return true;
+
+
+
+
                 }
                 return false;
+
+
+            }
+        }
+
+        internal void AddLeaderUser(UserTivoli selectedUser, UserTivoli currentuser)
+        {
+            using (var context = new MyDatabaseContext())
+            {
+
+                WorkgroupTivoli workgroup = context.Workgroups.First(u => u.Id == selectedUser.workgroupId);
+
+                workgroup.LeaderId = selectedUser.id;
+                Logger.Log($"Admin {currentuser.username} made {selectedUser.id},{selectedUser.username} leader of workgroup {workgroup.Id}, {workgroup.Name} ");
+
             }
         }
     }

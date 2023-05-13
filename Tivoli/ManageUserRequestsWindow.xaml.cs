@@ -52,13 +52,12 @@ namespace Tivoli
             RequestTivoli selectedRequest = (RequestTivoli)UserRequestsDataGrid.SelectedItem;
             if (selectedRequest != null)
             {
-                // Update the RequestTivoli status to "Approved"
-                selectedRequest.Status = "Approved";
                 dbHelper.ApproveRequest(selectedRequest.Id, _currentUser.id);
 
-                // Assign user to the workgroup
-                selectedRequest.User.workgroupId = selectedRequest.WorkgroupId;
-                dbHelper.UpdateUser(selectedRequest.User);
+
+             
+
+
 
                 // Refresh the user request list in the UI
                 LoadUserRequests();
@@ -72,7 +71,7 @@ namespace Tivoli
             {
                 // Update the RequestTivoli status to "Rejected"
                 selectedRequest.Status = "Rejected";
-                dbHelper.ApproveRequest(selectedRequest.Id, _currentUser.id);
+                dbHelper.RejectRequest(selectedRequest.Id, _currentUser.id);
 
                 // Refresh the user request list in the UI
                 LoadUserRequests();

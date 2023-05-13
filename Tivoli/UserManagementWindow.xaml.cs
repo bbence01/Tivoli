@@ -22,7 +22,7 @@ namespace Tivoli
     /// </summary>
     public partial class UserManagementWindow : Window
     {
-     
+        private UserTivoli _currentUser;
 
         private void LoadUsers()
         {
@@ -80,9 +80,22 @@ namespace Tivoli
             }
         }
 
-        DatabaseHelper dbhelper;
-        public UserManagementWindow(DatabaseHelper dbhelper)
+        private void AddLeaderUserButton_Click(object sender, RoutedEventArgs e)
         {
+            UserTivoli selectedUser = UsersDataGrid.SelectedItem as UserTivoli;
+            if (selectedUser != null)
+            {
+                // Replace this with your actual method of archiving users in the database
+                dbhelper.AddLeaderUser(selectedUser, _currentUser);
+                LoadUsers(); // Refresh the user list after archiving a user
+            }
+        }
+
+
+        DatabaseHelper dbhelper;
+        public UserManagementWindow(UserTivoli user, DatabaseHelper dbhelper)
+        {
+            this._currentUser = user;
 
             this.dbhelper = dbhelper;
             InitializeComponent();

@@ -18,7 +18,9 @@
             <Button x:Name="AddUserButton" Content="Add User" Margin="0,0,5,0" Click="AddUserButton_Click"/>
             <Button x:Name="EditUserButton" Content="Edit User" Margin="0,0,5,0" Click="EditUserButton_Click"/>
             <Button x:Name="DeleteUserButton" Content="Delete User" Margin="0,0,5,0" Click="DeleteUserButton_Click"/>
-            <Button x:Name="ArchiveUserButton" Content="Archive User" Click="ArchiveUserButton_Click"/>
+            <Button x:Name="ArchiveUserButton" Content="Archive User" Margin="0,0,5,0" Click="ArchiveUserButton_Click"/>
+            <Button x:Name="LeaderUserButton" Content="Leader User" Margin="0,0,5,0" Click="AddLeaderUserButton_Click"/>
+
         </StackPanel>
     </Grid>
 </Window>
