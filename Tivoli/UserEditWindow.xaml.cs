@@ -24,13 +24,18 @@ namespace Tivoli
     public partial class UserEditWindow : Window
     {
         private UserTivoli _user;
+        UserTivoli _currentUser;
 
-        public UserEditWindow(UserTivoli user)
+
+        public UserEditWindow(UserTivoli user, UserTivoli current)
         {
             InitializeComponent();
             _user = user;
             InitializeInputFields();
+            this._currentUser = current;
+
         }
+    
 
         private void InitializeInputFields()
         {

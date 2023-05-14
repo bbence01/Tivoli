@@ -82,7 +82,7 @@ namespace Tivoli
         private void ViewLogsButton_Click(object sender, RoutedEventArgs e)
         {
             // Implement view logs functionality
-            LogViewerWindow logViewerWindow = new LogViewerWindow();
+            LogViewerWindow logViewerWindow = new LogViewerWindow(_currentUser);
             logViewerWindow.ShowDialog();
 
         }
@@ -90,11 +90,13 @@ namespace Tivoli
 
         private void CreateWorkgroupButton_Click(object sender, RoutedEventArgs e)
         {
-            CreateWorkgroupWindow createWorkgroupWindow = new CreateWorkgroupWindow(context,dbhelper);
+            CreateWorkgroupWindow createWorkgroupWindow = new CreateWorkgroupWindow(_currentUser,context, dbhelper);
             bool? result = createWorkgroupWindow.ShowDialog();
 
             if (result.HasValue && result.Value)
             {
+                Logger.Log($" {_currentUser.username} WorkgroupTivoli created successfully.");
+
                 MessageBox.Show("WorkgroupTivoli created successfully.");
                 // Refresh the list of workgroups if necessary
             }

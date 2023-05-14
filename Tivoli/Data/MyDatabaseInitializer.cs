@@ -61,7 +61,7 @@ namespace Tivoli.Data
 
               );
 
-            password = "admin";
+            password = "Admin002*002*";
             hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
 
 
@@ -72,12 +72,16 @@ namespace Tivoli.Data
                 "admin",
                  hashedPassword,
                 "Admin",
-                 "Admin Man 1",
+                 "AdminMan 1",
                  "admin@example.com",
                  true
+                       
+
             );
 
-            password = "user";
+
+
+            password = "User002*002*";
             hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
 
             UserTivoli basicuser = new UserTivoli
@@ -95,41 +99,17 @@ namespace Tivoli.Data
 
      "user2",
       hashedPassword,
-     "UserTivoli",
+     "UserTivoli2",
       "UserTivoli Man 2",
       "user@example.com",
       true
  );
 
-            UserTivoli hruser = new UserTivoli
- (
-
-     "hruser",
-      hashedPassword,
-     "hr",
-      "hruser 1",
-      "hruser@example.com",
-      true,
-       hrgroup.Id
- );
+   
 
 
 
-            UserTivoli basicuserhr = new UserTivoli
-(
-
-"userhr",
- hashedPassword,
-"hr",
- "userhr Man 2",
- "user@example.com",
- true
-);
-
-
-
-
-            password = "hrpassword";
+            password = "HrPassword002*";
             hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
 
             UserTivoli hr = new UserTivoli
@@ -143,6 +123,29 @@ namespace Tivoli.Data
            true
       );
 
+            UserTivoli hruser = new UserTivoli
+(
+
+"hruser",
+hashedPassword,
+"hr",
+"hruser 1",
+"hruser@example.com",
+true
+);
+
+
+
+            UserTivoli basicuserhr = new UserTivoli
+(
+
+"userhr",
+ hashedPassword,
+"hr",
+ "userhr Man 2",
+ "user@example.com",
+ true
+);
 
 
 
@@ -221,20 +224,20 @@ namespace Tivoli.Data
                 }
 
                 if (context.Workgroups.FirstOrDefault(w => w.Name == Worker2.Name) == null)
-            {
+                  {
                 context.Workgroups.Add(Worker2);
 
-            }
+                  }
                 else
                 {
                    // context.Workgroups.AddOrUpdate(Worker2);
 
                 }
                 if (context.Workgroups.FirstOrDefault(w => w.Name == hrgroup.Name) == null)
-            {
+                 {
                 context.Workgroups.Add(hrgroup);
 
-            }
+                  }
                 else
                 {
                    // context.Workgroups.AddOrUpdate(hrgroup);

@@ -69,12 +69,16 @@ namespace Tivoli
 
             if (authenticatedUser != null)
             {
+                Logger.Log($"{username} logged in successfully.");
+
                 MainMenuWindow mainMenuWindow = new MainMenuWindow(authenticatedUser, _databaseHelper, _databaseContext, emailService);
                 mainMenuWindow.Show();
                 this.Close();
             }
             else
             {
+                Logger.Log($"Failed login attempt for {username}.");
+
                 MessageBox.Show("Invalid username or password.", "Login Failed", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -94,6 +98,8 @@ namespace Tivoli
             if (validationResults.Count > 0)
             {
                 string errorMessage = string.Join("\n", validationResults.Select(r => r.ErrorMessage));
+                Logger.Log($"Registration Failed\".\", \"Registration\" {registration.Username}.");
+
                 MessageBox.Show(errorMessage, "Registration Failed", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             else
@@ -102,11 +108,15 @@ namespace Tivoli
 
                 if (registeredUser != null)
                 {
+                    Logger.Log($"UserTivoli registration successful.\", \"Registration\"{registration.Username}.");
+
                     MessageBox.Show("UserTivoli registration successful.", "Registration", MessageBoxButton.OK, MessageBoxImage.Information);
                     // Optionally, navigate back to the login screen or perform any other desired action
                 }
                 else
                 {
+                    Logger.Log($"UserTivoli registration successful.\", \"Registration\"r {registration.Username}.");
+
                     MessageBox.Show("Registration failed. The username might already be taken.", "Registration Failed", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }

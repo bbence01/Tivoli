@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Tivoli.Logic
 {
@@ -25,6 +26,8 @@ namespace Tivoli.Logic
 
             var message = $"Request Details: {requestDetails}\nConfirmation Code: {confirmationCode}";
             await _emailSender.SendEmailAsync("tivoliteszt002@gmail.com", userEmail, "Your Confirmation Code", message, message);
+            Logger.Log($" {userEmail} Email sent");
+
         }
 
         public bool ConfirmRequest(string userEmail, int confirmationCode)
@@ -36,6 +39,8 @@ namespace Tivoli.Logic
                 {
                     _confirmationCodes.Remove(userEmail);
                     _attemptCounts.Remove(userEmail); // Remove the user from the attempt counts dictionary
+                    Logger.Log($" {userEmail} corrent code");
+
                     return true;
                 }
                 else
@@ -47,6 +52,8 @@ namespace Tivoli.Logic
                     {
                         _attemptCounts[userEmail] = 0; // Reset the attempt count
                         SendConfirmationEmailAsync(userEmail, "Details").Wait(); // Generate and send a new code
+                        Logger.Log($" Max attempts code reset");
+
                     }
                 }
             }

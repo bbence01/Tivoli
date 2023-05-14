@@ -20,14 +20,20 @@ namespace Tivoli.Models
         public int Id { get; set; }
 
         [ForeignKey("User")]
+        [Required]
+
         public int UserId { get; set; }
 
 
         [ForeignKey("Workgroup")]
+        [Required]
+
         public int WorkgroupId { get; set; }
         public string Status { get; set; }
 
         // Navigation properties
+
+        [Required]
 
         public string ? RequestType { get; set; }
 

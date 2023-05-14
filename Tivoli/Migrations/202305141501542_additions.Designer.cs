@@ -7,13 +7,13 @@ namespace Tivoli.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class hrrr : IMigrationMetadata
+    public sealed partial class additions : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(hrrr));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(additions));
         
         string IMigrationMetadata.Id
         {
-            get { return "202305131350511_hrrr"; }
+            get { return "202305141501542_additions"; }
         }
         
         string IMigrationMetadata.Source

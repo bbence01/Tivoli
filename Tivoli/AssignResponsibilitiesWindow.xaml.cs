@@ -40,7 +40,7 @@ namespace Tivoli
         private void LoadUsers()
         {
             // Get the list of users from the database.
-            List<UserTivoli> users = databaseHelper.GetAllUsers();
+            List<UserTivoli> users = databaseHelper.GetAllUsers(_currentUser);
 
             // Bind the list of users to the UserComboBox.
             UserComboBox.ItemsSource = users;
@@ -51,7 +51,7 @@ namespace Tivoli
         private void LoadWorkgroups()
         {
             // Get the list of workgroups from the database.
-            List<WorkgroupTivoli> workgroups = databaseHelper.GetAllWorkgroups();
+            List<WorkgroupTivoli> workgroups = databaseHelper.GetAllWorkgroups(_currentUser);
 
             // Bind the list of workgroups to the WorkgroupComboBox.
             WorkgroupComboBox.ItemsSource = workgroups;
@@ -71,10 +71,14 @@ namespace Tivoli
                 // Assign the responsibility in the database.
                 if (databaseHelper.AddUserToWorkgroup(userId, workgroupId, _currentUser.id))
                 {
+                    Logger.Log($" {_currentUser.username} Responsibility assigned successfully");
+
                     MessageBox.Show("Responsibility assigned successfully.");
                 }  
                 else
                 {
+                    Logger.Log($" {_currentUser.username} User is already part of a group.");
+
                     MessageBox.Show("User is already part of a group.");
 
                 }
@@ -82,6 +86,8 @@ namespace Tivoli
             }
             else
             {
+                Logger.Log($" {_currentUser.username} Please select a user and a workgroup.");
+
                 MessageBox.Show("Please select a user and a workgroup.");
             }
         }
@@ -95,11 +101,14 @@ namespace Tivoli
 
                 // Assign the responsibility in the database.
                 databaseHelper.removeUserFromWorkgroup(userId, workgroupId, _currentUser.id);
+                Logger.Log($" {_currentUser.username} Responsibility assigned successfully");
 
                 MessageBox.Show("Responsibility assigned successfully.");
             }
             else
             {
+                Logger.Log($" {_currentUser.username} Please select a user and a workgroup..");
+
                 MessageBox.Show("Please select a user and a workgroup.");
             }
         }

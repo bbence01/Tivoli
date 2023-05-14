@@ -24,11 +24,14 @@ namespace Tivoli
     {
         MyDatabaseContext context;
         DatabaseHelper dbhelper;
-        public CreateWorkgroupWindow(MyDatabaseContext context, DatabaseHelper dbhelper)
+        UserTivoli _currentUser;
+        public CreateWorkgroupWindow(UserTivoli user,MyDatabaseContext context, DatabaseHelper dbhelper)
         {
             this.context = context;
             InitializeComponent();
             this.dbhelper = dbhelper;
+            this._currentUser = user;
+
         }
 
         private void CreateButton_Click(object sender, RoutedEventArgs e)
@@ -38,6 +41,8 @@ namespace Tivoli
 
             if (string.IsNullOrEmpty(workgroupName) || string.IsNullOrEmpty(workgroupDescription))
             {
+                Logger.Log($" {_currentUser.username} Please enter a name and description for the workgroup..");
+
                 MessageBox.Show("Please enter a name and description for the workgroup.");
                 return;
             }
@@ -56,7 +61,7 @@ namespace Tivoli
                  context.SaveChanges();
              }*/
 
-            dbhelper.AddWorkgroup(newWorkgroup);
+            dbhelper.AddWorkgroup(newWorkgroup, _currentUser);
 
             // Close the window
             this.DialogResult = true;

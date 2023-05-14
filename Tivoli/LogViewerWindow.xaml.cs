@@ -23,9 +23,10 @@ namespace Tivoli
     /// </summary>
     public partial class LogViewerWindow : Window
     {
-        public LogViewerWindow()
+        public LogViewerWindow(UserTivoli user)
         {
             InitializeComponent();
+            Logger.Log($" {user.username} Opened logs");
 
             string logs = Logger.ReadLogs(); // Logger should be the class where you defined the Log method
             LogTextBox.Text = logs;

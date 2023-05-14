@@ -68,26 +68,27 @@ namespace Tivoli
                     dbHelper.ApproveRequest(selectedRequest.Id, _currentUser.id);
 
                 }
-                else if (selectedRequest.Status == "In Progres")
+                else if (selectedRequest.Status == "In Progress")
                 {
-                    ConfirmCodeWindow confirmCodeWindow = new ConfirmCodeWindow();
+                    ConfirmCodeWindow confirmCodeWindow = new ConfirmCodeWindow(_currentUser);
+                
 
                     if (confirmCodeWindow.ShowDialog() == true)
                     {
                         int code = confirmCodeWindow.EnteredCode;
-                        dbHelper.ConfirmRequestCode(code, emailService, selectedRequest );
+                        dbHelper.ConfirmRequestCode(code, emailService, selectedRequest, _currentUser);
                     }
                     else
                     {
-                        // Handle case when the ConfirmCodeWindow was closed without entering a code
-                    
+                        MessageBox.Show("Code does not match.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
                     }
 
 
                 }
                 else
                 {
-                    dbHelper.SendEmailConfirmation(selectedRequest, emailService);
+                    dbHelper.SendEmailConfirmation(selectedRequest, emailService, _currentUser);
 
                 }
 
@@ -102,17 +103,67 @@ namespace Tivoli
         }
 
         private void RejectButton_Click(object sender, RoutedEventArgs e)
-        {
+        {/*
             RequestTivoli selectedRequest = (RequestTivoli)UserRequestsDataGrid.SelectedItem;
             if (selectedRequest != null)
             {
                 // Update the RequestTivoli status to "Rejected"
                 selectedRequest.Status = "Rejected";
-                dbHelper.RejectRequest(selectedRequest.Id, _currentUser.id);
+                dbHelper.RejectRequest(selectedRequest.Id, _currentUser.id, _currentUser);
+
+                // Refresh the user request list in the UI
+                LoadUserRequests();
+            }*/
+
+            RequestTivoli selectedRequest = (RequestTivoli)UserRequestsDataGrid.SelectedItem;
+            if (selectedRequest != null)
+            {
+
+
+
+
+
+
+
+
+                if (selectedRequest.Status == "Approved")
+                {
+                    dbHelper.RejectRequest(selectedRequest.Id, _currentUser.id, _currentUser);
+
+                }
+                else if (selectedRequest.Status == "In Progress")
+                {
+                    ConfirmCodeWindow confirmCodeWindow = new ConfirmCodeWindow(_currentUser);
+
+                    if (confirmCodeWindow.ShowDialog() == true)
+                    {
+                        int code = confirmCodeWindow.EnteredCode;
+                        dbHelper.ConfirmRequestCode(code, emailService, selectedRequest, _currentUser);
+                    }
+                    else
+                    {
+                        // Handle case when the ConfirmCodeWindow was closed without entering a code
+
+                    }
+
+
+                }
+                else
+                {
+                    dbHelper.SendEmailConfirmation(selectedRequest, emailService, _currentUser);
+
+                }
+
+
+
+
+
 
                 // Refresh the user request list in the UI
                 LoadUserRequests();
             }
+
+
         }
     }
 

@@ -19,7 +19,7 @@ namespace Tivoli.Data
 
     public class MyDatabaseContext : System.Data.Entity.DbContext
     {
-        public MyDatabaseContext() : base(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Egyetem\4.felev\INFOBiz\feleves\Tivoli\Tivoli\Data\MyDatabase.mdf;Integrated Security=True;Connect Timeout=30")
+        public MyDatabaseContext() : base(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Egyetem\4.felev\INFOBiz\feleves\Tivoli\Tivoli\Data\MyDatabase.mdf;Integrated Security=True;Connect Timeout=300")
         {
 
         }

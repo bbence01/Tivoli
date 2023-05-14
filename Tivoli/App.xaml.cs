@@ -17,7 +17,7 @@ namespace Tivoli
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
-    {
+    {/*
         static string ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Egyetem\4.felev\INFOBiz\feleves\Tivoli\Tivoli\Data\MyDatabase.mdf;Integrated Security=True;Connect Timeout=30";
 
       
@@ -69,7 +69,7 @@ namespace Tivoli
             }
 
             return diff == 0;
-        }
+        }*/
     }
 
 }

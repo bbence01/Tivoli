@@ -27,15 +27,15 @@ namespace Tivoli
         private void LoadUsers()
         {
             // Replace this with your actual method of retrieving users from the database
-            List<UserTivoli> users = dbhelper.GetAllUsers();
+            List<UserTivoli> users = dbhelper.GetAllUsers(_currentUser);
 
             UsersDataGrid.ItemsSource = users;
         }
 
         private void AddUserButton_Click(object sender, RoutedEventArgs e)
         {
-            UserEditWindow userEditWindow = new UserEditWindow(null); // Pass null for adding a new user
-            bool? result = userEditWindow.ShowDialog();
+            UserCreateWindow userCreateWindow = new UserCreateWindow(_currentUser); // Pass null for adding a new user
+            bool? result = userCreateWindow.ShowDialog();
             if (result.HasValue && result.Value)
             {
                 LoadUsers(); // Refresh the user list after adding a new user
@@ -47,7 +47,7 @@ namespace Tivoli
             UserTivoli selectedUser = UsersDataGrid.SelectedItem as UserTivoli;
             if (selectedUser != null)
             {
-                UserEditWindow userEditWindow = new UserEditWindow(selectedUser);
+                UserEditWindow userEditWindow = new UserEditWindow(selectedUser, _currentUser);
                 bool? result = userEditWindow.ShowDialog();
                 if (result.HasValue && result.Value)
                 {
@@ -63,7 +63,7 @@ namespace Tivoli
             if (selectedUser != null)
             {
                 // Replace this with your actual method of deleting users from the database
-                dbhelper.DeleteUser(selectedUser);
+                dbhelper.DeleteUser(selectedUser, _currentUser);
                 LoadUsers(); // Refresh the user list after deleting a user
             }
         }
@@ -75,7 +75,7 @@ namespace Tivoli
             if (selectedUser != null)
             {
                 // Replace this with your actual method of archiving users in the database
-                dbhelper.ArchiveUserInDatabase(selectedUser);
+                dbhelper.ArchiveUserInDatabase(selectedUser, _currentUser);
                 LoadUsers(); // Refresh the user list after archiving a user
             }
         }

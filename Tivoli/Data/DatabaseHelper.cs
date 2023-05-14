@@ -13,6 +13,8 @@ using Tivoli.Logic;
 using System.Drawing;
 using Azure.Core;
 using System.Diagnostics.Eventing.Reader;
+using Org.BouncyCastle.Asn1.Ocsp;
+using System.Data.Entity.Migrations;
 
 namespace Tivoli.Data
 {
@@ -30,7 +32,7 @@ namespace Tivoli.Data
             return new SqlConnection(_connectionString);
         }
 
-
+        /*
 
         // Add a new user to the database
         public void AddUser(UserTivoli user)
@@ -51,7 +53,7 @@ namespace Tivoli.Data
                     command.ExecuteNonQuery();
                 }
             }
-        }
+        }*/
 
 
 
@@ -75,10 +77,11 @@ namespace Tivoli.Data
                      command.ExecuteNonQuery();
                  }
              }
-         }*/
+        /* }*/
 
         // Delete a user from the database
-        public void DeleteUser(UserTivoli user)
+        /*
+        public void DeleteUser(UserTivoli user, UserTivoli currentuser)
         {
             using (SqlConnection connection = GetConnection())
             {
@@ -87,9 +90,12 @@ namespace Tivoli.Data
                 {
                     command.Parameters.AddWithValue("@Id", user.id);
                     command.ExecuteNonQuery();
+                    Logger.Log($" {currentuser.username} deleted {user.username}");
+
                 }
+                
             }
-        }
+        }*/
 
         // Get all users from the database
         /*
@@ -148,29 +154,53 @@ namespace Tivoli.Data
             return users;
         }*/
 
-        public List<UserTivoli> GetAllUsers()
+
+        public void DeleteUser(UserTivoli user, UserTivoli currentuser)
         {
             using (var context = new MyDatabaseContext())
             {
+                context.Users.Remove(user);
+                context.SaveChanges();
+               
+
+            }
+            Logger.Log($" {currentuser.username} deleted {user.username}");
+
+        }
+        
+
+            public List<UserTivoli> GetAllUsers(UserTivoli currentuser)
+        {
+            using (var context = new MyDatabaseContext())
+            {
+                Logger.Log($" {currentuser.username} GetAllUsers ");
+
                 return context.Users.ToList();
             }
         }
 
-        public List<WorkgroupTivoli> GetAllWorkgroups()
+        public List<WorkgroupTivoli> GetAllWorkgroups(UserTivoli currentuser)
         {
             using (var context = new MyDatabaseContext())
             {
+                Logger.Log($" {currentuser.username} GetAllWorkgroups ");
                 return context.Workgroups.ToList();
             }
         }
 
-        public void ArchiveUserInDatabase(UserTivoli user)
+        public void ArchiveUserInDatabase(UserTivoli user, UserTivoli currentuser)
         {
             user.IsActive = false;
+
+            UpdateUser(user, currentuser);
+
+
+            Logger.Log($" {currentuser.username} archived {user.username}");
+
         }
 
 
-        public void AddWorkgroup(WorkgroupTivoli workgroup)
+        public void AddWorkgroup(WorkgroupTivoli workgroup, UserTivoli currentuser)
         {
             using (SqlConnection connection = GetConnection())
             {
@@ -184,6 +214,8 @@ namespace Tivoli.Data
 
 
                     command.ExecuteNonQuery();
+                    Logger.Log($" {currentuser.username} AddWorkgroup {workgroup.Name}");
+
                 }
             }
         }
@@ -220,7 +252,7 @@ namespace Tivoli.Data
             return workergroups;
         }
         */
-        public void AssignResponsibility(int userId, int workgroupId)
+        public void AssignResponsibility(int userId, int workgroupId, UserTivoli currentuser)
         {
             using (SqlConnection connection = GetConnection())
             {
@@ -231,16 +263,20 @@ namespace Tivoli.Data
                     command.Parameters.AddWithValue("@WorkgroupId", workgroupId);
 
                     command.ExecuteNonQuery();
+                    Logger.Log($" {currentuser.username} AssignResponsibility {userId} to group {workgroupId}  ");
+
                 }
             }
         }
 
-        public void AddUserRequest(RequestTivoli userRequest)
+        public void AddUserRequest(RequestTivoli userRequest, UserTivoli currentuser)
         {
             using (MyDatabaseContext context = new MyDatabaseContext())
             {
                 context.Requests.Add(userRequest);
                 context.SaveChanges();
+                Logger.Log($" {currentuser.username} AddUserRequest {userRequest.Id}  ");
+
             }
         }
         /*
@@ -281,28 +317,33 @@ namespace Tivoli.Data
                     .ToList();
             }
         }*/
-
-        public void UpdateUserRequest(RequestTivoli request)
+        /*
+        public void UpdateUserRequest(RequestTivoli request, UserTivoli currentuser)
         {
             using (var context = new MyDatabaseContext())
             {
                 context.Requests.Attach(request);
                 context.Entry(request).State = EntityState.Modified;
                 context.SaveChanges();
-            }
-        }
+                Logger.Log($" {currentuser.username} UpdateUserRequest {request.Id}  ");
 
-        public void UpdateUser(UserTivoli user)
+            }
+        }*/
+
+        public void UpdateUser(UserTivoli user, UserTivoli currentuser)
         {
             using (var context = new MyDatabaseContext())
             {
                 context.Users.Attach(user);
                 context.Entry(user).State = EntityState.Modified;
+
                 context.SaveChanges();
+                Logger.Log($" {currentuser.username} UpdateUser {user.id}  ");
+
             }
         }
 
-        public bool MakeUserLeader(UserTivoli user, WorkgroupTivoli workgroup)
+        public bool MakeUserLeader(UserTivoli user, WorkgroupTivoli workgroup, UserTivoli currentuser)
         {
             using (var context = new MyDatabaseContext())
             {
@@ -313,6 +354,8 @@ namespace Tivoli.Data
                 // Set the user as the leader of the workgroup
                 workgroup.LeaderId = user.id;
                 context.SaveChanges();
+                Logger.Log($"Failed to add user {user.username} to workgroup {workgroup.Name}: UserTivoli is already in another workgroup.");
+
                 return true;
             }
         }
@@ -333,6 +376,7 @@ namespace Tivoli.Data
                     List<RequestTivoli> tvr= new List<RequestTivoli>();
 
                     tvr = context.Requests.ToList();
+                    Logger.Log($" {currentuser.username} GetUserRequests all");
 
                     return context.Requests.Include(r => r.User).ToList();
                 }
@@ -342,16 +386,19 @@ namespace Tivoli.Data
                     if (currentuser.workgroupId != null)
                     {
                         WorkgroupTivoli workgroup = context.Workgroups.First(u => u.Id == currentuser.workgroupId);
+                        Logger.Log($" {currentuser.username} GetUserRequests  pendnig {workgroup.Name} ");
 
                         return context.Requests
                       .Include(r => r.User)
                       .Include(r => r.Workgroup)
-                      .Where(r => r.Status == "Pending" && r.Workgroup.LeaderId == currentuser.id)
+                      .Where(r=> r.Workgroup.LeaderId == currentuser.id)
                       .ToList();
                     }
                     // If the user is a group leader, return only the requests related to their workgroup
                     else
                     {
+                        Logger.Log($" {currentuser.username} GetUserRequests  empty ");
+
                         return new List<RequestTivoli>();
                     }
 
@@ -385,6 +432,12 @@ namespace Tivoli.Data
                     Logger.Log($"Added user {user.username} to workgroup {workgroup.Name}.");
 
                 }
+                else if(currentuser.Workgroup ==null)
+                {
+                    Logger.Log($"Failed to add user {user.username} to workgroup {workgroup.Name}: UserTivoli is already in another workgroup.");
+
+                    return false;
+                }
                 else if (currentuser.Workgroup.Name == "Hr")
                 {
                     // If the user performing the action is HR, create a request
@@ -408,6 +461,7 @@ namespace Tivoli.Data
 
                 context.SaveChanges();
 
+                Logger.Log($"Added user {user.username} to workgroup {workgroup.Name}.");
 
                 return true;
             }
@@ -427,6 +481,12 @@ namespace Tivoli.Data
                     Logger.Log($"User {currentuser.username} removed user {user.username} from workgroup {workgroup.Name}");
                     return true;
                 }
+                else if (currentuser.Workgroup == null)
+                {
+                    Logger.Log($"Failed to add user {user.username} to workgroup {workgroup.Name}: UserTivoli is already in another workgroup.");
+
+                    return false;
+                }
                 else if (currentuser.role == "Hr") // Check if the user is an HR
                 {
                     RequestTivoli request = new RequestTivoli
@@ -441,15 +501,18 @@ namespace Tivoli.Data
                     Logger.Log($"User {currentuser.username} created a request to remove user {user.username} from workgroup {workgroup.Name}");
                     return true;
                 }
+                Logger.Log($"User {currentuser.username} Failed to remov user {user.username} from workgroup {workgroup.Name}");
+
                 return false;
             }
 
         }
 
-        public UserTivoli getUserById(int id)
+        public UserTivoli getUserById(int id, UserTivoli currentuser)
         {
             using (var context = new MyDatabaseContext())
             {
+                Logger.Log($" {currentuser.username} getUserById {id}  ");
 
 
                 return context.Users.FirstOrDefault(u => u.id == id);
@@ -459,11 +522,12 @@ namespace Tivoli.Data
         }
 
 
-        public WorkgroupTivoli getWorkgroupById(int id)
+        public WorkgroupTivoli getWorkgroupById(int id, UserTivoli currentuser)
         {
             using (var context = new MyDatabaseContext())
             {
 
+                Logger.Log($" {currentuser.username} getWorkgroupById {id}  ");
 
                 return context.Workgroups.FirstOrDefault(u => u.Id == id);
             }
@@ -471,13 +535,15 @@ namespace Tivoli.Data
 
         }
 
-        public RequestTivoli getRequestById(int id)
+        public RequestTivoli getRequestById(int id, UserTivoli currentuser)
         {
             using (var context = new MyDatabaseContext())
             {
 
+                Logger.Log($" {currentuser.username} getRequestById {id}  ");
 
                 return context.Requests.FirstOrDefault(u => u.Id == id);
+
             }
 
 
@@ -494,6 +560,8 @@ namespace Tivoli.Data
                 if (performedByUser.role == "Admin") // Check if the user is an admin
                 {
                     request.Status = "Approved";
+                    UpdateRequestStatus(request, "Approved");
+
                     if (request.RequestType == "RemoveUserFromWorkgroup")
                     {
                         request.Workgroup.Users.Remove(request.User);
@@ -521,6 +589,8 @@ namespace Tivoli.Data
                 else if (performedByUserID == request.Workgroup.LeaderId)
                 {
                     request.Status = "Approved";
+                    UpdateRequestStatus(request, "Approved");
+
                     if (request.RequestType == "RemoveUserFromWorkgroup")
                     {
                         request.Workgroup.Users.Remove(request.User);
@@ -547,12 +617,13 @@ namespace Tivoli.Data
 
                 }
 
+                Logger.Log($" {performedByUser.username} approved failed {request.Id}");
 
                 return false;
             }
         }
 
-        internal bool RejectRequest(int requestID, int performedByUserID)
+        internal bool RejectRequest(int requestID, int performedByUserID, UserTivoli currentuser)
         {
             using (var context = new MyDatabaseContext())
             {
@@ -560,10 +631,12 @@ namespace Tivoli.Data
                 RequestTivoli request = context.Requests.First(u => u.Id == requestID);
                 if (performedByUser.role == "Admin") // Check if the user is an admin
                 {
-                    request.Status = "Approved";
+                   // request.Status = "Approved";
                     if (request.RequestType == "RemoveUserFromWorkgroup")
                     {
                         request.Status = "Rejected";
+                        UpdateRequestStatus(request, "Rejected");
+
 
 
                         Logger.Log($"Admin {performedByUser.username} Rejected remove request {request.Id}");
@@ -572,6 +645,8 @@ namespace Tivoli.Data
                     else if (request.RequestType == "AddUserToWorkgroup")
                     {
                         request.Status = "Rejected";
+                        UpdateRequestStatus(request, "Rejected");
+
                         Logger.Log($"Admin {performedByUser.username} Rejected add request {request.Id}");
 
 
@@ -590,6 +665,7 @@ namespace Tivoli.Data
                     if (request.RequestType == "RemoveUserFromWorkgroup")
                     {
                         request.Status = "Rejected";
+                        UpdateRequestStatus(request, "Rejected");
 
 
                         Logger.Log($"Leader {performedByUser.username} Rejected remove request {request.Id}");
@@ -598,6 +674,7 @@ namespace Tivoli.Data
                     else if (request.RequestType == "AddUserToWorkgroup")
                     {
                         request.Status = "Rejected";
+                        UpdateRequestStatus(request, "Rejected");
 
 
                         Logger.Log($"Leader {performedByUser.username} Rejected add request {request.Id}");
@@ -612,10 +689,27 @@ namespace Tivoli.Data
 
 
                 }
+                Logger.Log($" {performedByUser.username} reject failed {request.Id}");
+
                 return false;
 
 
             }
+        }
+
+
+        internal void UpdateWorkgroup(WorkgroupTivoli wg, UserTivoli currentuser)
+        {
+            using (var context = new MyDatabaseContext())
+            {
+
+                context.Workgroups.AddOrUpdate(wg);
+               // context.Entry(wg).State = EntityState.Modified;
+
+                context.SaveChanges();
+                Logger.Log($" {currentuser.username} UpdateUser {wg.Id}  ");
+            }
+
         }
 
         internal void AddLeaderUser(UserTivoli selectedUser, UserTivoli currentuser)
@@ -626,12 +720,14 @@ namespace Tivoli.Data
                 WorkgroupTivoli workgroup = context.Workgroups.First(u => u.Id == selectedUser.workgroupId);
 
                 workgroup.LeaderId = selectedUser.id;
+                UpdateWorkgroup(workgroup, currentuser);
+
                 Logger.Log($"Admin {currentuser.username} made {selectedUser.id},{selectedUser.username} leader of workgroup {workgroup.Id}, {workgroup.Name} ");
 
             }
         }
 
-        internal void SendEmailConfirmation(RequestTivoli selectedRequest, EmailService emailSender)
+        internal void SendEmailConfirmation(RequestTivoli selectedRequest, EmailService emailSender, UserTivoli currentuser)
         {
             EmailService emailService = emailSender;
             RequestConfirmationService emailconfirm = new RequestConfirmationService(emailService);
@@ -651,17 +747,20 @@ namespace Tivoli.Data
                      htmlContent: "<strong>Hello, World!</strong>"
                  );
                 */
-            
+
 
                 emailconfirm.SendConfirmationEmailAsync("tivoliteszt002@yahoo.com", " " + selectedRequest.Workgroup.Name + selectedRequest.User.fullname + selectedRequest.RequestType);
+                Logger.Log($" {currentuser.username} Sent confirmation email request {selectedRequest.Id}");
 
                 selectedRequest.Status = "In Progress";
-
+                UpdateRequestStatus(selectedRequest, "In Progress");
 
             }
 
         }
-        
+
+
+
 
         internal void UpdateRequestStatus(int requestId, string v)
         {
@@ -669,11 +768,28 @@ namespace Tivoli.Data
             {
                 RequestTivoli request = context.Requests.First(u => u.Id == requestId);
                 request.Status = v;
+                context.Requests.AddOrUpdate(request);
+                context.SaveChanges();
+                Logger.Log($"  Updated request {request.Id}");
             }
+
 
         }
 
-        internal bool ConfirmRequestCode(int code, EmailService emailSender, RequestTivoli selectedRequest)
+        internal void UpdateRequestStatus(RequestTivoli request, string v)
+        {
+            using (var context = new MyDatabaseContext())
+            {
+                request.Status = v;
+                context.Requests.AddOrUpdate(request);
+                context.SaveChanges();
+                Logger.Log($"  Updated request {request.Id}");
+            }
+
+
+        }
+
+        internal bool ConfirmRequestCode(int code, EmailService emailSender, RequestTivoli selectedRequest, UserTivoli currentuser)
         {
 
 
@@ -683,11 +799,15 @@ namespace Tivoli.Data
             if (emailconfirm.ConfirmRequest("tivoliteszt002@yahoo.com", code))
             {
                 selectedRequest.Status = "Approved";
+                UpdateRequestStatus(selectedRequest, "Approved");
+                Logger.Log($" {currentuser.username} aprroved Status request id {selectedRequest.Id}");
+
                 return true;
 
             }
             else
             {
+                Logger.Log($" {currentuser.username} Failed to enter passcode request id {selectedRequest.Id}");
 
                 return false;
 

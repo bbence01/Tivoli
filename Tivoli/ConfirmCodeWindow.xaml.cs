@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Tivoli.Models;
 
 namespace Tivoli
 {
@@ -20,10 +21,13 @@ namespace Tivoli
     public partial class ConfirmCodeWindow : Window
     {
         public int EnteredCode { get; private set; }
+        UserTivoli _currentUser;
 
-        public ConfirmCodeWindow()
+        public ConfirmCodeWindow(UserTivoli user)
         {
             InitializeComponent();
+            this._currentUser = user;
+
         }
 
         private void SubmitButton_Click(object sender, RoutedEventArgs e)
@@ -37,6 +41,8 @@ namespace Tivoli
             }
             else
             {
+                Logger.Log($" {_currentUser.username} code not valid..");
+
                 // Handle invalid input
                 MessageBox.Show("Please enter a valid code.");
             }
