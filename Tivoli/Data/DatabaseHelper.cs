@@ -32,127 +32,7 @@ namespace Tivoli.Data
             return new SqlConnection(_connectionString);
         }
 
-        /*
-
-        // Add a new user to the database
-        public void AddUser(UserTivoli user)
-        {
-            using (SqlConnection connection = GetConnection())
-            {
-                connection.Open();
-                using (SqlCommand command = new SqlCommand(
-                    "INSERT INTO Users (Username, FullName, Email, Password, Role) VALUES (@Username, @FullName, @Email, @Password, @Role)",
-                    connection))
-                {
-                    command.Parameters.AddWithValue("@Username", user.username);
-                    command.Parameters.AddWithValue("@FullName", user.fullname);
-                    command.Parameters.AddWithValue("@Email", user.email);
-                    command.Parameters.AddWithValue("@Password", user.passwordHash);
-                    command.Parameters.AddWithValue("@Role", user.role);
-
-                    command.ExecuteNonQuery();
-                }
-            }
-        }*/
-
-
-
-
-        // Update an existing user in the database
-        /* public void UpdateUser(UserTivoli user)
-         {
-             using (SqlConnection connection = GetConnection())
-             {
-                 connection.Open();
-                 using (SqlCommand command = new SqlCommand(
-                     "UPDATE Users SET Username = @Username, FullName = @FullName, Email = @Email, Password = @Password, Role = @Role WHERE Id = @Id",
-                     connection))
-                 {
-                     // command.Parameters.AddWithValue("@Id", user.id);
-                     command.Parameters.AddWithValue("@Username", user.username);
-                     command.Parameters.AddWithValue("@FullName", user.fullname);
-                     command.Parameters.AddWithValue("@Email", user.email);
-                     command.Parameters.AddWithValue("@Password", user.passwordHash);
-                     command.Parameters.AddWithValue("@Role", user.role);
-                     command.ExecuteNonQuery();
-                 }
-             }
-        /* }*/
-
-        // Delete a user from the database
-        /*
-        public void DeleteUser(UserTivoli user, UserTivoli currentuser)
-        {
-            using (SqlConnection connection = GetConnection())
-            {
-                connection.Open();
-                using (SqlCommand command = new SqlCommand("DELETE FROM Users WHERE Id = @Id", connection))
-                {
-                    command.Parameters.AddWithValue("@Id", user.id);
-                    command.ExecuteNonQuery();
-                    Logger.Log($" {currentuser.username} deleted {user.username}");
-
-                }
-                
-            }
-        }*/
-
-        // Get all users from the database
-        /*
-        public List<UserTivoli> GetAllUsers()
-        {
-            int type = 5;
-            List<UserTivoli> users = new List<UserTivoli>();
-
-            using (SqlConnection connection = GetConnection())
-            {
-                connection.Open();
-                using (SqlCommand command = new SqlCommand("SELECT * FROM Users", connection))
-                {
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-
-                            if (reader["WorkgroupId"] is DBNull)
-                            {
-                                UserTivoli user = new UserTivoli
-                            (
-                                 (int)reader["Id"],
-                                 (string)reader["Username"],
-                                 (string)reader["PasswordHash"],
-                                 (string)reader["Role"],
-                                 (string)reader["FullName"],
-                                 (string)reader["Email"],
-                                 (bool)reader["isActive"]
-                            );
-                                users.Add(user);
-                            }
-                            else
-                            {
-                                UserTivoli user = new UserTivoli
-                            (
-                                 (int)reader["Id"],
-                                 (string)reader["Username"],
-                                 (string)reader["PasswordHash"],
-                                 (string)reader["Role"],
-                                 (string)reader["FullName"],
-                                 (string)reader["Email"],
-                                 (bool)reader["isActive"],
-                                 (int)reader["WorkgroupId"]
-                            );
-                                users.Add(user);
-                            }
-
-
-
-                        }
-                    }
-                }
-            }
-
-            return users;
-        }*/
+      
 
 
         public void DeleteUser(UserTivoli user, UserTivoli currentuser)
@@ -219,116 +99,6 @@ namespace Tivoli.Data
                 }
             }
         }
-
-
-        /*
-        public List<WorkgroupTivoli> GetAllWorkgroups()
-        {
-            // Retrieve workgroups from the database.
-            List<WorkgroupTivoli> workergroups = new List<WorkgroupTivoli>();
-
-            using (SqlConnection connection = GetConnection())
-            {
-                connection.Open();
-                using (SqlCommand command = new SqlCommand("SELECT * FROM Workgroups", connection))
-                {
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            WorkgroupTivoli wg = new WorkgroupTivoli
-                            (
-                                 (int)reader["Id"],
-                                 (string)reader["Name"],
-                                 (string)reader["Description"]
-
-                            );
-                            workergroups.Add(wg);
-                        }
-                    }
-                }
-            }
-
-            return workergroups;
-        }
-        */
-        public void AssignResponsibility(int userId, int workgroupId, UserTivoli currentuser)
-        {
-            using (SqlConnection connection = GetConnection())
-            {
-                connection.Open();
-                using (SqlCommand command = new SqlCommand("UPDATE Users SET WorkgroupId = @WorkgroupId WHERE Id = @UserId", connection))
-                {
-                    command.Parameters.AddWithValue("@UserId", userId);
-                    command.Parameters.AddWithValue("@WorkgroupId", workgroupId);
-
-                    command.ExecuteNonQuery();
-                    Logger.Log($" {currentuser.username} AssignResponsibility {userId} to group {workgroupId}  ");
-
-                }
-            }
-        }
-
-        public void AddUserRequest(RequestTivoli userRequest, UserTivoli currentuser)
-        {
-            using (MyDatabaseContext context = new MyDatabaseContext())
-            {
-                context.Requests.Add(userRequest);
-                context.SaveChanges();
-                Logger.Log($" {currentuser.username} AddUserRequest {userRequest.Id}  ");
-
-            }
-        }
-        /*
-        public List<RequestTivoli> GetUserRequests()
-        {
-            using (MyDatabaseContext context = new MyDatabaseContext())
-            {
-                return context.UserRequests.Include(ur => ur.UserTivoli).Include(ur => ur.WorkgroupTivoli).ToList();
-            }
-        }
-
-        public void UpdateUserRequest(RequestTivoli userRequest)
-        {
-            using (MyDatabaseContext context = new MyDatabaseContext())
-            {
-                context.Entry(userRequest).State = EntityState.Modified;
-                context.SaveChanges();
-            }
-        }
-
-        public void DeleteUserRequest(RequestTivoli userRequest)
-        {
-            using (MyDatabaseContext context = new MyDatabaseContext())
-            {
-                context.Entry(userRequest).State = EntityState.Deleted;
-                context.SaveChanges();
-            }
-        }*/
-        /*
-        public List<RequestTivoli> GetUserRequests()
-        {
-            using (var context = new MyDatabaseContext())
-            {
-                return context.Requests
-                    .Include(r => r.UserTivoli)
-                    .Include(r => r.WorkgroupTivoli)
-                    .Where(r => r.Status == "Pending")
-                    .ToList();
-            }
-        }*/
-        /*
-        public void UpdateUserRequest(RequestTivoli request, UserTivoli currentuser)
-        {
-            using (var context = new MyDatabaseContext())
-            {
-                context.Requests.Attach(request);
-                context.Entry(request).State = EntityState.Modified;
-                context.SaveChanges();
-                Logger.Log($" {currentuser.username} UpdateUserRequest {request.Id}  ");
-
-            }
-        }*/
 
         public void UpdateUser(UserTivoli user, UserTivoli currentuser)
         {
@@ -818,5 +588,243 @@ namespace Tivoli.Data
 
 
         }
+
+
+
+        /*
+
+      // Add a new user to the database
+      public void AddUser(UserTivoli user)
+      {
+          using (SqlConnection connection = GetConnection())
+          {
+              connection.Open();
+              using (SqlCommand command = new SqlCommand(
+                  "INSERT INTO Users (Username, FullName, Email, Password, Role) VALUES (@Username, @FullName, @Email, @Password, @Role)",
+                  connection))
+              {
+                  command.Parameters.AddWithValue("@Username", user.username);
+                  command.Parameters.AddWithValue("@FullName", user.fullname);
+                  command.Parameters.AddWithValue("@Email", user.email);
+                  command.Parameters.AddWithValue("@Password", user.passwordHash);
+                  command.Parameters.AddWithValue("@Role", user.role);
+
+                  command.ExecuteNonQuery();
+              }
+          }
+      }*/
+
+
+
+
+        // Update an existing user in the database
+        /* public void UpdateUser(UserTivoli user)
+         {
+             using (SqlConnection connection = GetConnection())
+             {
+                 connection.Open();
+                 using (SqlCommand command = new SqlCommand(
+                     "UPDATE Users SET Username = @Username, FullName = @FullName, Email = @Email, Password = @Password, Role = @Role WHERE Id = @Id",
+                     connection))
+                 {
+                     // command.Parameters.AddWithValue("@Id", user.id);
+                     command.Parameters.AddWithValue("@Username", user.username);
+                     command.Parameters.AddWithValue("@FullName", user.fullname);
+                     command.Parameters.AddWithValue("@Email", user.email);
+                     command.Parameters.AddWithValue("@Password", user.passwordHash);
+                     command.Parameters.AddWithValue("@Role", user.role);
+                     command.ExecuteNonQuery();
+                 }
+             }
+        /* }*/
+
+        // Delete a user from the database
+        /*
+        public void DeleteUser(UserTivoli user, UserTivoli currentuser)
+        {
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand("DELETE FROM Users WHERE Id = @Id", connection))
+                {
+                    command.Parameters.AddWithValue("@Id", user.id);
+                    command.ExecuteNonQuery();
+                    Logger.Log($" {currentuser.username} deleted {user.username}");
+
+                }
+                
+            }
+        }*/
+
+        // Get all users from the database
+        /*
+        public List<UserTivoli> GetAllUsers()
+        {
+            int type = 5;
+            List<UserTivoli> users = new List<UserTivoli>();
+
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand("SELECT * FROM Users", connection))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+
+                            if (reader["WorkgroupId"] is DBNull)
+                            {
+                                UserTivoli user = new UserTivoli
+                            (
+                                 (int)reader["Id"],
+                                 (string)reader["Username"],
+                                 (string)reader["PasswordHash"],
+                                 (string)reader["Role"],
+                                 (string)reader["FullName"],
+                                 (string)reader["Email"],
+                                 (bool)reader["isActive"]
+                            );
+                                users.Add(user);
+                            }
+                            else
+                            {
+                                UserTivoli user = new UserTivoli
+                            (
+                                 (int)reader["Id"],
+                                 (string)reader["Username"],
+                                 (string)reader["PasswordHash"],
+                                 (string)reader["Role"],
+                                 (string)reader["FullName"],
+                                 (string)reader["Email"],
+                                 (bool)reader["isActive"],
+                                 (int)reader["WorkgroupId"]
+                            );
+                                users.Add(user);
+                            }
+
+
+
+                        }
+                    }
+                }
+            }
+
+            return users;
+        }*/
+
+
+        /*
+        public List<WorkgroupTivoli> GetAllWorkgroups()
+        {
+            // Retrieve workgroups from the database.
+            List<WorkgroupTivoli> workergroups = new List<WorkgroupTivoli>();
+
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand("SELECT * FROM Workgroups", connection))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            WorkgroupTivoli wg = new WorkgroupTivoli
+                            (
+                                 (int)reader["Id"],
+                                 (string)reader["Name"],
+                                 (string)reader["Description"]
+
+                            );
+                            workergroups.Add(wg);
+                        }
+                    }
+                }
+            }
+
+            return workergroups;
+        }
+        */
+
+        /*
+
+        public void AssignResponsibility(int userId, int workgroupId, UserTivoli currentuser)
+        {
+            using (SqlConnection connection = GetConnection())
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand("UPDATE Users SET WorkgroupId = @WorkgroupId WHERE Id = @UserId", connection))
+                {
+                    command.Parameters.AddWithValue("@UserId", userId);
+                    command.Parameters.AddWithValue("@WorkgroupId", workgroupId);
+
+                    command.ExecuteNonQuery();
+                    Logger.Log($" {currentuser.username} AssignResponsibility {userId} to group {workgroupId}  ");
+
+                }
+            }
+        }
+
+        public void AddUserRequest(RequestTivoli userRequest, UserTivoli currentuser)
+        {
+            using (MyDatabaseContext context = new MyDatabaseContext())
+            {
+                context.Requests.Add(userRequest);
+                context.SaveChanges();
+                Logger.Log($" {currentuser.username} AddUserRequest {userRequest.Id}  ");
+
+            }
+        }
+        
+        public List<RequestTivoli> GetUserRequests()
+        {
+            using (MyDatabaseContext context = new MyDatabaseContext())
+            {
+                return context.UserRequests.Include(ur => ur.UserTivoli).Include(ur => ur.WorkgroupTivoli).ToList();
+            }
+        }
+
+        public void UpdateUserRequest(RequestTivoli userRequest)
+        {
+            using (MyDatabaseContext context = new MyDatabaseContext())
+            {
+                context.Entry(userRequest).State = EntityState.Modified;
+                context.SaveChanges();
+            }
+        }
+
+        public void DeleteUserRequest(RequestTivoli userRequest)
+        {
+            using (MyDatabaseContext context = new MyDatabaseContext())
+            {
+                context.Entry(userRequest).State = EntityState.Deleted;
+                context.SaveChanges();
+            }
+        }*/
+        /*
+        public List<RequestTivoli> GetUserRequests()
+        {
+            using (var context = new MyDatabaseContext())
+            {
+                return context.Requests
+                    .Include(r => r.UserTivoli)
+                    .Include(r => r.WorkgroupTivoli)
+                    .Where(r => r.Status == "Pending")
+                    .ToList();
+            }
+        }*/
+        /*
+        public void UpdateUserRequest(RequestTivoli request, UserTivoli currentuser)
+        {
+            using (var context = new MyDatabaseContext())
+            {
+                context.Requests.Attach(request);
+                context.Entry(request).State = EntityState.Modified;
+                context.SaveChanges();
+                Logger.Log($" {currentuser.username} UpdateUserRequest {request.Id}  ");
+
+            }
+        }*/
+
     }
 }

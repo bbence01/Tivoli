@@ -66,23 +66,37 @@ namespace Tivoli
                 int userId = int.Parse(UserComboBox.SelectedValue.ToString());
                 int workgroupId = int.Parse(WorkgroupComboBox.SelectedValue.ToString());
 
+                UserTivoli user = databaseHelper.getUserById(userId, _currentUser);
 
 
-                // Assign the responsibility in the database.
-                if (databaseHelper.AddUserToWorkgroup(userId, workgroupId, _currentUser.id))
+
+                if (user.IsActive)
                 {
-                    Logger.Log($" {_currentUser.username} Responsibility assigned successfully");
 
-                    MessageBox.Show("Responsibility assigned successfully.");
-                }  
-                else
-                {
-                    Logger.Log($" {_currentUser.username} User is already part of a group.");
+                    // Assign the responsibility in the database.
+                    if (databaseHelper.AddUserToWorkgroup(userId, workgroupId, _currentUser.id))
+                    {
+                        Logger.Log($" {_currentUser.username} Responsibility assigned successfully");
 
-                    MessageBox.Show("User is already part of a group.");
+                        MessageBox.Show("Responsibility assigned successfully.");
+                    }
+                    else
+                    {
+                        Logger.Log($" {_currentUser.username} User is already part of a group.");
+
+                        MessageBox.Show("User is already part of a group.");
+
+                    }
 
                 }
+                else
+                {
+                    Logger.Log($" {_currentUser.username} Please activate the  a {user.username} .");
 
+                    MessageBox.Show($"{_currentUser.username} Please activate the  a {user.username} .");
+                }
+
+             
             }
             else
             {

@@ -19,11 +19,12 @@ namespace Tivoli.Data
 
     public class MyDatabaseContext : System.Data.Entity.DbContext
     {
-        public MyDatabaseContext() : base(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Egyetem\4.felev\INFOBiz\feleves\Tivoli\Tivoli\Data\MyDatabase.mdf;Integrated Security=True;Connect Timeout=300")
+        
+
+        public MyDatabaseContext() : base(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\MyDatabase.mdf;Integrated Security=True;Connect Timeout=300")
         {
 
         }
-
         public System.Data.Entity.DbSet<UserTivoli> Users { get; set; }
 
         public System.Data.Entity.DbSet<WorkgroupTivoli> Workgroups { get; set; }
