@@ -6,37 +6,42 @@
         xmlns:local="clr-namespace:Tivoli"
         mc:Ignorable="d"
         Title="UserEditWindow" Height="450" Width="800">
-    <Grid Margin="10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <Grid>
+        <Label Content="Username:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="UsernameTextBox" HorizontalAlignment="Left" Height="23" Margin="10,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
 
-        <Label Content="Username:" Grid.Row="0" />
-        <TextBox x:Name="UsernameTextBox" Grid.Row="1" Margin="0,0,0,10"/>
+        <Label Content="Full Name:" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="FullNameTextBox" HorizontalAlignment="Left" Height="23" Margin="10,80,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
 
-        <Label Content="Full Name:" Grid.Row="2" />
-        <TextBox x:Name="FullNameTextBox" Grid.Row="3" Margin="0,0,0,10"/>
+        <Label Content="Email:" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="EmailTextBox" HorizontalAlignment="Left" Height="23" Margin="10,130,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
 
-        <Label Content="Email:" Grid.Row="4" />
-        <TextBox x:Name="EmailTextBox" Grid.Row="5" Margin="0,0,0,10"/>
+        <Label Content="Password:" HorizontalAlignment="Left" Margin="10,160,0,0" VerticalAlignment="Top"/>
+        <PasswordBox x:Name="PasswordBox" HorizontalAlignment="Left" Height="23" Margin="10,180,0,0" VerticalAlignment="Top" Width="120"/>
 
-        <Label Content="Password:" Grid.Row="6" />
-        <PasswordBox x:Name="PasswordBox" Grid.Row="7" Margin="0,0,0,10"/>
-
-        <Label Content="Role:" Grid.Row="8" />
-        <ComboBox x:Name="RoleComboBox" Grid.Row="9" Margin="0,0,0,10">
-            <ComboBoxItem Content="User" />
-            <ComboBoxItem Content="Admin" />
+        <Label Content="Role:" HorizontalAlignment="Left" Margin="10,210,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="RoleComboBox" HorizontalAlignment="Left" Margin="10,230,0,0" VerticalAlignment="Top" Width="120">
+            <ComboBoxItem Content="UserTivoli"/>
+            <ComboBoxItem Content="Admin"/>
         </ComboBox>
 
-        <StackPanel Grid.Row="10" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button x:Name="SaveButton" Content="Save" Margin="0,0,5,0" Click="SaveButton_Click"/>
-            <Button x:Name="CancelButton" Content="Cancel" Click="CancelButton_Click"/>
-        </StackPanel>
+        <Label Content="Email Confirmed:" HorizontalAlignment="Left" Margin="200,10,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="EmailConfirmedCheckBox" HorizontalAlignment="Left" Margin="200,30,0,0" VerticalAlignment="Top" />
+
+        <Label Content="Is Admin:" HorizontalAlignment="Left" Margin="200,60,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="IsAdminCheckBox" HorizontalAlignment="Left" Margin="200,80,0,0" VerticalAlignment="Top" />
+
+        <Label Content="Lockout End Date:" HorizontalAlignment="Left" Margin="200,110,0,0" VerticalAlignment="Top"/>
+        <DatePicker x:Name="LockoutEndDatePicker" HorizontalAlignment="Left" Margin="200,130,0,0" VerticalAlignment="Top" />
+
+        <Label Content="Failed Login Attempts:" HorizontalAlignment="Left" Margin="200,160,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="FailedLoginAttemptsTextBox" HorizontalAlignment="Left" Height="23" Margin="200,180,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+
+        <Label Content="Password Last Set:" HorizontalAlignment="Left" Margin="200,210,0,0" VerticalAlignment="Top"/>
+        <DatePicker x:Name="PasswordLastSetDatePicker" HorizontalAlignment="Left" Margin="200,230,0,0" VerticalAlignment="Top"/>
+
+        <Button x:Name="SaveButton" Content="Save" HorizontalAlignment="Left" Margin="10,280,0,0" VerticalAlignment="Top" Width="75" Click="SaveButton_Click"/>
+        <Button x:Name="CancelButton" Content="Cancel" HorizontalAlignment="Left" Margin="90,280,0,0" VerticalAlignment="Top" Width="75" Click="CancelButton_Click"/>
     </Grid>
 </Window>
+

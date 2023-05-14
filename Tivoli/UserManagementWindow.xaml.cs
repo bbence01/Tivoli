@@ -47,7 +47,7 @@ namespace Tivoli
             UserTivoli selectedUser = UsersDataGrid.SelectedItem as UserTivoli;
             if (selectedUser != null)
             {
-                UserEditWindow userEditWindow = new UserEditWindow(selectedUser, _currentUser);
+                UserEditWindow userEditWindow = new UserEditWindow(selectedUser, _currentUser, dbhelper);
                 bool? result = userEditWindow.ShowDialog();
                 if (result.HasValue && result.Value)
                 {

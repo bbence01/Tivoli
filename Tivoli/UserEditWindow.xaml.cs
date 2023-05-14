@@ -1,17 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Tivoli.Models;
 using Tivoli.Data;
 using Tivoli.Logic;
@@ -25,17 +13,19 @@ namespace Tivoli
     {
         private UserTivoli _user;
         UserTivoli _currentUser;
+        DatabaseHelper dbHelper;
 
 
-        public UserEditWindow(UserTivoli user, UserTivoli current)
+        public UserEditWindow(UserTivoli user, UserTivoli current, DatabaseHelper dbhelper)
         {
             InitializeComponent();
             _user = user;
             InitializeInputFields();
             this._currentUser = current;
+            this.dbHelper = dbhelper;
+
 
         }
-    
 
         private void InitializeInputFields()
         {
@@ -44,9 +34,12 @@ namespace Tivoli
                 UsernameTextBox.Text = _user.username;
                 FullNameTextBox.Text = _user.fullname;
                 EmailTextBox.Text = _user.email;
-                // Don't populate the password field for security reasons
                 RoleComboBox.SelectedIndex = _user.role == "Admin" ? 1 : 0;
-
+                EmailConfirmedCheckBox.IsChecked = _user.EmailConfirmed;
+                IsAdminCheckBox.IsChecked = _user.IsAdmin;
+                LockoutEndDatePicker.SelectedDate = _user.LockoutEnd;
+                FailedLoginAttemptsTextBox.Text = _user.FailedLoginAttempts.ToString();
+                PasswordLastSetDatePicker.SelectedDate = _user.PasswordLastSet;
             }
             else
             {
@@ -62,17 +55,20 @@ namespace Tivoli
                 _user = new UserTivoli
                 (
                      UsernameTextBox.Text,
-                     FullNameTextBox.Text,
-                     EmailTextBox.Text,
                      UserTivoli.HashPassword(PasswordBox.Password), // Hash the password before storing
                      RoleComboBox.SelectedIndex == 1 ? "Admin" : "UserTivoli",
+                     FullNameTextBox.Text,
+                     EmailTextBox.Text,
                      true
                 );
 
-                // Add the new user to
+                _user.EmailConfirmed = EmailConfirmedCheckBox.IsChecked ?? false;
+                _user.IsAdmin = IsAdminCheckBox.IsChecked ?? false;
+                _user.LockoutEnd = LockoutEndDatePicker.SelectedDate;
+                _user.FailedLoginAttempts = int.TryParse(FailedLoginAttemptsTextBox.Text, out var failedLoginAttempts) ? failedLoginAttempts : 0;
+                _user.PasswordLastSet = PasswordLastSetDatePicker.SelectedDate ?? DateTime.Now;
 
-
-                // Replace this with your actual method for adding a user to the database
+                // Add the new user to the database
                 AddUserToDatabase(_user);
             }
             else
@@ -87,9 +83,13 @@ namespace Tivoli
                     _user.passwordHash = UserTivoli.HashPassword(PasswordBox.Password);
                 }
                 _user.role = RoleComboBox.SelectedIndex == 1 ? "Admin" : "UserTivoli";
+                _user.EmailConfirmed = EmailConfirmedCheckBox.IsChecked ?? false;
+                _user.IsAdmin = IsAdminCheckBox.IsChecked ?? false;
+                _user.LockoutEnd = LockoutEndDatePicker.SelectedDate;
+                _user.FailedLoginAttempts = int.TryParse(FailedLoginAttemptsTextBox.Text, out var failedLoginAttempts) ? failedLoginAttempts : 0;
+                _user.PasswordLastSet = PasswordLastSetDatePicker.SelectedDate ?? DateTime.Now;
 
                 // Update the user in the database
-                // Replace this with your actual method for updating a user in the database
                 UpdateUserInDatabase(_user);
             }
 
@@ -100,12 +100,15 @@ namespace Tivoli
 
         private void UpdateUserInDatabase(UserTivoli user)
         {
-            throw new NotImplementedException();
+            // Implement your logic to update the user in the database
+            dbHelper.UpdateUser(_user, _currentUser);
         }
 
         private void AddUserToDatabase(UserTivoli user)
         {
-            throw new NotImplementedException();
+            // Implement your logic to add the user to the database
+            dbHelper.UpdateUser(_user, _currentUser);
+
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -114,7 +117,5 @@ namespace Tivoli
             DialogResult = false;
             Close();
         }
-
     }
 }
-
