@@ -23,27 +23,13 @@ namespace Tivoli
     /// </summary>
     public partial class LogViewerWindow : Window
     {
-        private void LoadLogEntries()
-        {/*
-            // Replace this with your actual method of retrieving log entries
-            // e.g., from a file or a database
-            List<Microsoft.IdentityModel.Abstractions.LogEntry> logEntries = GetLogEntries();
-
-            LogDataGrid.ItemsSource = logEntries;*/
-        }
-
         public LogViewerWindow()
         {
             InitializeComponent();
-            LoadLogEntries();
+
+            string logs = Logger.ReadLogs(); // Logger should be the class where you defined the Log method
+            LogTextBox.Text = logs;
         }
-
-        private void ViewLogsButton_Click(object sender, RoutedEventArgs e)
-        {
-            LogViewerWindow logViewerWindow = new LogViewerWindow();
-            logViewerWindow.ShowDialog(); // Use ShowDialog() to open the window as a modal dialog
-        }
-
-
     }
+
 }

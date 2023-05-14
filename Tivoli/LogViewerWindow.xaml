@@ -7,6 +7,6 @@
         mc:Ignorable="d"
         Title="LogViewerWindow" Height="450" Width="800">
     <Grid>
-        <DataGrid x:Name="LogDataGrid" AutoGenerateColumns="True" IsReadOnly="True" />
+        <TextBox Name="LogTextBox" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
     </Grid>
 </Window>

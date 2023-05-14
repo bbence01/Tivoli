@@ -32,8 +32,7 @@ namespace Tivoli
         private MyDatabaseContext _databaseContext;
         private MyDatabaseInitializer myDatabaseInitializer;
 
-     
-
+        EmailService emailService;
 
         public MainWindow()
         {
@@ -43,7 +42,7 @@ namespace Tivoli
             ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Egyetem\4.felev\INFOBiz\feleves\Tivoli\Tivoli\Data\MyDatabase.mdf;Integrated Security=True;Connect Timeout=30";
             _databaseHelper = new DatabaseHelper(ConnectionString);
 
-
+             this.emailService = new EmailService();
             try
             {
                 // Your database initialization code here
@@ -70,7 +69,7 @@ namespace Tivoli
 
             if (authenticatedUser != null)
             {
-                MainMenuWindow mainMenuWindow = new MainMenuWindow(authenticatedUser, _databaseHelper, _databaseContext);
+                MainMenuWindow mainMenuWindow = new MainMenuWindow(authenticatedUser, _databaseHelper, _databaseContext, emailService);
                 mainMenuWindow.Show();
                 this.Close();
             }

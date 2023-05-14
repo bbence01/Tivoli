@@ -29,13 +29,14 @@ namespace Tivoli
         DatabaseHelper dbhelper; 
         private UserTivoli _currentUser;
         MyDatabaseContext context;
+        private readonly EmailService _emailSender;
 
-        
 
-        public MainMenuWindow(UserTivoli user, DatabaseHelper dbhelper , MyDatabaseContext context)
+        public MainMenuWindow(UserTivoli user, DatabaseHelper dbhelper , MyDatabaseContext context, EmailService emailSender)
         {
             this.context = context;
             this._currentUser = user;
+            _emailSender = emailSender;
             this.dbhelper = dbhelper;
             InitializeComponent();
             if (_currentUser.role == "Admin")
@@ -81,6 +82,8 @@ namespace Tivoli
         private void ViewLogsButton_Click(object sender, RoutedEventArgs e)
         {
             // Implement view logs functionality
+            LogViewerWindow logViewerWindow = new LogViewerWindow();
+            logViewerWindow.ShowDialog();
 
         }
 
@@ -108,7 +111,7 @@ namespace Tivoli
 
         private void ManageUserRequestsButton_Click(object sender, RoutedEventArgs e)
         {
-            ManageUserRequestsWindow manageUserRequestsWindow = new ManageUserRequestsWindow(_currentUser, context, dbhelper);
+            ManageUserRequestsWindow manageUserRequestsWindow = new ManageUserRequestsWindow(_currentUser, context, dbhelper, _emailSender);
             manageUserRequestsWindow.ShowDialog();
         }
 

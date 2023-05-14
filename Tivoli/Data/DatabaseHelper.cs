@@ -12,6 +12,7 @@ using Tivoli.Data;
 using Tivoli.Logic;
 using System.Drawing;
 using Azure.Core;
+using System.Diagnostics.Eventing.Reader;
 
 namespace Tivoli.Data
 {
@@ -630,9 +631,10 @@ namespace Tivoli.Data
             }
         }
 
-        internal void SendEmailConfirmation(RequestTivoli selectedRequest)
+        internal void SendEmailConfirmation(RequestTivoli selectedRequest, EmailService emailSender)
         {
-            EmailService emailService = new EmailService();
+            EmailService emailService = emailSender;
+            RequestConfirmationService emailconfirm = new RequestConfirmationService(emailService);
 
             using (var context = new MyDatabaseContext())
             {
@@ -640,16 +642,22 @@ namespace Tivoli.Data
                 //  emailService.SendConfirmationEmail(selectedRequest.User.email, confirmationLink);
                 //  emailService.SendConfirmationEmail("tivoliteszt002@yahoo.com", confirmationLink);
 
-               
-                 emailService.SendEmailAsync(
-                    fromEmail: "tivoliteszt002@gmail.com",
-                    toEmail: "tivoliteszt002@yahoo.com",
-                    subject: "Hello",
-                    plainTextContent: "Hello, World!",
-                    htmlContent: "<strong>Hello, World!</strong>"
-                );
+                /*
+                  emailService.SendEmailAsync(
+                     fromEmail: "tivoliteszt002@gmail.com",
+                     toEmail: "tivoliteszt002@yahoo.com",
+                     subject: "Hello",
+                     plainTextContent: "Hello, World!",
+                     htmlContent: "<strong>Hello, World!</strong>"
+                 );
+                */
+            
+
+                emailconfirm.SendConfirmationEmailAsync("tivoliteszt002@yahoo.com", " " + selectedRequest.Workgroup.Name + selectedRequest.User.fullname + selectedRequest.RequestType);
 
                 selectedRequest.Status = "In Progress";
+
+
             }
 
         }
@@ -662,6 +670,32 @@ namespace Tivoli.Data
                 RequestTivoli request = context.Requests.First(u => u.Id == requestId);
                 request.Status = v;
             }
+
+        }
+
+        internal bool ConfirmRequestCode(int code, EmailService emailSender, RequestTivoli selectedRequest)
+        {
+
+
+            RequestConfirmationService emailconfirm = new RequestConfirmationService(emailSender);
+
+
+            if (emailconfirm.ConfirmRequest("tivoliteszt002@yahoo.com", code))
+            {
+                selectedRequest.Status = "Approved";
+                return true;
+
+            }
+            else
+            {
+
+                return false;
+
+            } 
+
+
+
+
 
         }
     }

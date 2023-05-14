@@ -10,7 +10,8 @@ namespace Tivoli.Logic
     {
         private readonly EmailService _emailSender;
         private readonly Dictionary<string, int> _confirmationCodes;
-
+        private readonly Dictionary<string, int> _attemptCounts = new Dictionary<string, int>();
+        private const int MaxAttempts = 3;
         public RequestConfirmationService(EmailService emailSender)
         {
             _emailSender = emailSender;
@@ -23,17 +24,30 @@ namespace Tivoli.Logic
             _confirmationCodes[userEmail] = confirmationCode;
 
             var message = $"Request Details: {requestDetails}\nConfirmation Code: {confirmationCode}";
-            await _emailSender.SendEmailAsync("you@yourdomain.com", userEmail, "Your Confirmation Code", message, message);
+            await _emailSender.SendEmailAsync("tivoliteszt002@gmail.com", userEmail, "Your Confirmation Code", message, message);
         }
 
         public bool ConfirmRequest(string userEmail, int confirmationCode)
         {
+
             if (_confirmationCodes.TryGetValue(userEmail, out var storedCode))
             {
                 if (storedCode == confirmationCode)
                 {
                     _confirmationCodes.Remove(userEmail);
+                    _attemptCounts.Remove(userEmail); // Remove the user from the attempt counts dictionary
                     return true;
+                }
+                else
+                {
+                    _attemptCounts[userEmail]++; // Increment the attempt count
+
+                    // If the attempt count is over the maximum, generate a new code and reset the count
+                    if (_attemptCounts[userEmail] > MaxAttempts)
+                    {
+                        _attemptCounts[userEmail] = 0; // Reset the attempt count
+                        SendConfirmationEmailAsync(userEmail, "Details").Wait(); // Generate and send a new code
+                    }
                 }
             }
 

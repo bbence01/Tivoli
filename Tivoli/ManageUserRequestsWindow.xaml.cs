@@ -29,12 +29,12 @@ namespace Tivoli
         DatabaseHelper dbHelper;
         UserTivoli _currentUser;
         EmailService emailService;
-        public ManageUserRequestsWindow(UserTivoli user, MyDatabaseContext context, DatabaseHelper dbhelper)
+        public ManageUserRequestsWindow(UserTivoli user, MyDatabaseContext context, DatabaseHelper dbhelper, EmailService emailSender)
         {
             this._currentUser = user;
             this.context = context;
             this.dbHelper = dbhelper;
-            this.emailService = new EmailService();
+            this.emailService = emailSender;
             InitializeComponent();
             
 
@@ -60,16 +60,39 @@ namespace Tivoli
 
 
 
-                dbHelper.SendEmailConfirmation(selectedRequest);
 
 
 
+                if (selectedRequest.Status == "Approved")
+                {
+                    dbHelper.ApproveRequest(selectedRequest.Id, _currentUser.id);
+
+                }
+                else if (selectedRequest.Status == "In Progres")
+                {
+                    ConfirmCodeWindow confirmCodeWindow = new ConfirmCodeWindow();
+
+                    if (confirmCodeWindow.ShowDialog() == true)
+                    {
+                        int code = confirmCodeWindow.EnteredCode;
+                        dbHelper.ConfirmRequestCode(code, emailService, selectedRequest );
+                    }
+                    else
+                    {
+                        // Handle case when the ConfirmCodeWindow was closed without entering a code
+                    
+                    }
 
 
-                dbHelper.ApproveRequest(selectedRequest.Id, _currentUser.id);
+                }
+                else
+                {
+                    dbHelper.SendEmailConfirmation(selectedRequest, emailService);
+
+                }
 
 
-             
+
 
 
 
