@@ -39,7 +39,8 @@ namespace Tivoli
             _databaseContext = new MyDatabaseContext();
             myDatabaseInitializer = new MyDatabaseInitializer(_databaseContext);
 
-            ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\MyDatabase.mdf;Integrated Security=True;Connect Timeout=300";
+            ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Egyetem\4.felev\INFOBiz\feleves\Tivoli\Tivoli\Data\MyDatabase.mdf;Integrated Security=True;Connect Timeout=30";
+
             _databaseHelper = new DatabaseHelper(ConnectionString);
 
              this.emailService = new EmailService();

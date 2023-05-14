@@ -9,20 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Data\MyDatabase.mdf" />
-    <None Remove="Data\MyDatabase_log.ldf" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Data\MyDatabase.mdf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\MyDatabase_log.ldf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="Google.Apis" Version="1.60.0" />
@@ -38,6 +24,15 @@
     <PackageReference Include="MimeKit" Version="4.0.0" />
     <PackageReference Include="SendGrid" Version="9.28.1" />
     <PackageReference Include="SendGrid.SmtpApi" Version="1.4.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Data\MyDatabase.mdf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\MyDatabase_log.ldf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -17,7 +17,19 @@ namespace Tivoli
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
-    {/*
+    {
+
+
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            string dataDirectory = System.IO.Path.Combine(Environment.CurrentDirectory, "Data");
+            AppDomain.CurrentDomain.SetData("DataDirectory", dataDirectory);
+        }
+
+        /*
         static string ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Egyetem\4.felev\INFOBiz\feleves\Tivoli\Tivoli\Data\MyDatabase.mdf;Integrated Security=True;Connect Timeout=30";
 
       
