@@ -16,6 +16,8 @@ using System.Windows.Shapes;
 using Tivoli.Data;
 using Tivoli.Logic;
 using Tivoli.Models;
+using Microsoft.Extensions.Configuration;
+
 
 namespace Tivoli
 {
@@ -29,6 +31,9 @@ namespace Tivoli
         private string ConnectionString;
         private MyDatabaseContext _databaseContext;
         private MyDatabaseInitializer myDatabaseInitializer;
+
+     
+
 
         public MainWindow()
         {

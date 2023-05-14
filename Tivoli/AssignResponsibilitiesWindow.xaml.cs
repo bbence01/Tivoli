@@ -66,6 +66,8 @@ namespace Tivoli
                 int userId = int.Parse(UserComboBox.SelectedValue.ToString());
                 int workgroupId = int.Parse(WorkgroupComboBox.SelectedValue.ToString());
 
+
+
                 // Assign the responsibility in the database.
                 if (databaseHelper.AddUserToWorkgroup(userId, workgroupId, _currentUser.id))
                 {

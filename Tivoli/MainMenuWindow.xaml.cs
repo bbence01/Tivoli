@@ -14,6 +14,8 @@ using System.Windows.Shapes;
 using Tivoli.Models;
 using Tivoli.Data;
 using Tivoli.Logic;
+using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace Tivoli
 {
@@ -27,6 +29,8 @@ namespace Tivoli
         DatabaseHelper dbhelper; 
         private UserTivoli _currentUser;
         MyDatabaseContext context;
+
+        
 
         public MainMenuWindow(UserTivoli user, DatabaseHelper dbhelper , MyDatabaseContext context)
         {

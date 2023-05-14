@@ -57,10 +57,15 @@ namespace Tivoli
             {
 
 
-                
 
-               
+
+
                 dbHelper.SendEmailConfirmation(selectedRequest);
+
+
+
+
+
                 dbHelper.ApproveRequest(selectedRequest.Id, _currentUser.id);
 
 

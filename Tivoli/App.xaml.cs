@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -17,6 +19,8 @@ namespace Tivoli
     public partial class App : Application
     {
         static string ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Egyetem\4.felev\INFOBiz\feleves\Tivoli\Tivoli\Data\MyDatabase.mdf;Integrated Security=True;Connect Timeout=30";
+
+      
 
 
         protected override void OnStartup(StartupEventArgs e)

@@ -22,10 +22,12 @@ using System.Threading;
 using SendGrid.Helpers.Mail;
 using SendGrid;
 using SendGrid.Helpers.Mail.Model;
+using Microsoft.Extensions.Configuration;
 
 namespace Tivoli.Logic
 {
     public class EmailService
+
     {/*
         internal void SendConfirmationEmail(string emailTo, string confirmationLink)
         {
@@ -98,11 +100,24 @@ namespace Tivoli.Logic
         }
         */
 
-        private const string SendGridApiKey = "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";
+        //   private const string SendGridApiKey = "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";
+
+       
+        
 
         public async Task SendEmailAsync(string fromEmail, string toEmail, string subject, string plainTextContent, string htmlContent)
         {
-            var client = new SendGridClient(SendGridApiKey);
+
+                var builder = new ConfigurationBuilder()
+             .SetBasePath(Directory.GetCurrentDirectory())
+             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+             .AddUserSecrets<MainWindow>(); // replace MainWindow with your WPF window class
+
+            IConfigurationRoot configuration = builder.Build();
+
+            string apiKey = configuration["SendGrid:ApiKey"];
+
+            var client = new SendGridClient(apiKey);
             var from = new EmailAddress(fromEmail);
             var to = new EmailAddress(toEmail);
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);

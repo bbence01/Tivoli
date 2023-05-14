@@ -5,6 +5,7 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <UserSecretsId>b31e299e-48dd-42f9-a241-af216da02f81</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,6 +18,9 @@
     <PackageReference Include="MailKit" Version="4.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
     <PackageReference Include="MimeKit" Version="4.0.0" />
     <PackageReference Include="SendGrid" Version="9.28.1" />
     <PackageReference Include="SendGrid.SmtpApi" Version="1.4.6" />
